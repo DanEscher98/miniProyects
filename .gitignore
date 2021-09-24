@@ -3,7 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
+# Directories
+hawapp/.stack-work/
+
+# Compiled files
+*.o
+*.out
+*.
 *.so
 
 # Distribution / packaging
