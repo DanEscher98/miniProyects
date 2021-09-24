@@ -5,6 +5,7 @@ __pycache__/
 
 # Directories
 hawapp/.stack-work/
+*.cabal
 
 # Compiled files
 *.o

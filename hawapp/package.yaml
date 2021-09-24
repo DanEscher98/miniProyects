@@ -2,9 +2,9 @@ name:                hawapp
 version:             0.1.0.0
 github:              "githubuser/hawapp"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2021 Author name here"
+author:              "Daniel Colin"
+maintainer:          "dasa.escline@gmail.com"
+copyright:           "2021 Daniel Colin"
 
 extra-source-files:
 - README.md
@@ -17,10 +17,22 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
+
 description:         Please see the README on GitHub at <https://github.com/githubuser/hawapp#readme>
 
 dependencies:
 - base >= 4.7 && < 5
+- classy-prelude
+- time
+- time-lens
+- pcre-heavy            # Regex
+- template-haskell      #
+
+default-extensions:
+- NoImplicitPrelude
+- OverloadedStrings
+- QuasiQuotes
+- TemplateHaskell
 
 library:
   source-dirs: src
