@@ -1,0 +1,61 @@
+name:                hawapp
+version:             0.1.0.0
+github:              "githubuser/hawapp"
+license:             BSD3
+author:              "Daniel Sanchez"
+maintainer:          "danyiel5978@gmail.com"
+copyright:           "2021 Daniel Sanchez"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/githubuser/hawapp#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- containers
+- text
+- mtl
+- bytestring
+- pcre-heavy
+- mono-traversable
+- classy-prelude
+
+default-extensions:
+- QuasiQuotes
+- OverloadedStrings
+- NoImplicitPrelude
+
+library:
+  source-dirs: src
+
+executables:
+  hawapp-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -package text
+    dependencies:
+    - hawapp
+
+tests:
+  hawapp-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - hawapp
