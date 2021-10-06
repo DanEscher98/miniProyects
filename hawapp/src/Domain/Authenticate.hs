@@ -1,7 +1,23 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes       #-}
-module Domain.Authenticate where
+module Domain.Authenticate (
+    -- Types
+    Auth (..),
+    Email,      mkEmail,    rawEmail,
+    Password,   mkPassword, rawPassword,
+    UserId, VerificationCode, SessionId,
+    RegistrationError(..),
+    EmailVerificationError(..),
+    LoginError(..),
+    -- Ports
+    AuthRepo(..),
+    EmailVerificationNotif(..),
+    SessionRepo(..),
+    -- Use cases
+    register, verifyEmail, login,
+    resolveSessionId, getUser
+                           ) where
 
 import           ClassyPrelude
 import           Control.Monad.Except
@@ -17,7 +33,7 @@ data RegistrationError
 
 newtype Email = Email
     { emailRaw :: Text
-    } deriving (Show, Eq)
+    } deriving (Show, Eq, Ord)
 
 newtype Password = Password
     { passwordRaw :: Text
@@ -52,20 +68,21 @@ data Auth = Auth
     , authPassword :: Password
     } deriving (Show, Eq)
 
-data EmailVerificationError =
-    EmailVerificationErrorInvalidCode
+data EmailVerificationError
+    = EmailVerificationErrorInvalidCode
     deriving (Show, Eq)
 
 type VerificationCode = Text
 
 class Monad m => AuthRepo m where
-    addAuth :: Auth -> m (Either RegistrationError VerificationCode)
-    setEmailAsVerified :: VerificationCode -> m (Either EmailVerificationError ())
-    findUserByAuth :: Auth -> m (Maybe (UserId, Bool))
+    addAuth             :: Auth -> m (Either RegistrationError VerificationCode)
+    setEmailAsVerified  :: VerificationCode -> m (Either EmailVerificationError ())
+    findUserByAuth      :: Auth -> m (Maybe (UserId, Bool))
+    findEmailFromUserId :: UserId -> m (Maybe Email)
 
 class Monad m => SessionRepo m where
-    newSession :: UserId -> m SessionId
-    findUserIdBySessionId :: SessionId -> m (Maybe UserId)
+    newSession              :: UserId -> m SessionId
+    findUserIdBySessionId   :: SessionId -> m (Maybe UserId)
 
 class Monad m => EmailVerificationNotif m where
     notifyEmailVerification :: Email -> VerificationCode -> m ()
@@ -93,16 +110,33 @@ verifyEmail = setEmailAsVerified
 
 -- Login and Resolving Session
 --      Types Definition
-type UserId = Int
+
+newtype UserId = UserId Int deriving (Show, Eq)
+-- A 'newtype' ensures that we won’t mix Int that is
+-- meant to represent UserId to other Int that
+-- represents something else, for example, OrderId.
 
 type SessionId = Text
 
-data LoginError = LoginErrorInvalidAuth
+data LoginError
+    = LoginErrorInvalidAuth
     | LoginErrorEmailNotVerified
     deriving (Show, Eq)
 
-resolveSessionId :: SessionRepo m -> SessionId -> m (Maybe UserId)
+resolveSessionId :: SessionRepo m => SessionId -> m (Maybe UserId)
 resolveSessionId = findUserIdBySessionId
+
+login :: (AuthRepo m, SessionRepo m) =>
+    Auth -> m (Either LoginError SessionId)
+login auth = runExceptT $ do
+    result <- lift $ findUserByAuth auth
+    case result of
+        Nothing         -> throwError LoginErrorInvalidAuth
+        Just (_, False) -> throwError LoginErrorEmailNotVerified
+        Just (usrId, _) -> lift $ newSession usrId
+
+getUser :: AuthRepo m => UserId -> m (Maybe Email)
+getUser = findEmailFromUserId
 
 --  Email Verification
 --      Types definition
