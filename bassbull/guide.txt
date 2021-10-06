@@ -1,0 +1,12 @@
+$ tree
+.
+├── LICENSE
+├── Setup.hs
+├── bassbull.cabal
+├── src
+│   ├── Main.hs
+├── stack.yaml
+4 directories, 7 files
+stack new bassbull simple
+stack setup; stack build
+stack exec bassbull
