@@ -1,4 +1,4 @@
-TARGET 	= MINI_PROJECT_IN_C
+TARGET 	= main
 FLAGS	= -Wall -Wextra -pedantic
 
 $(TARGET).out : $(TARGET).c
