@@ -8,8 +8,8 @@ struct STUDENT
 	char name[10];
 	float avg;
 };
-int main()
-{
+
+int main() {
 	void add();
 	void password();
 	void displayAll();
@@ -23,8 +23,7 @@ int main()
 	printf("\n\t\t\t\t\t\t   STUDENT RECORDS\n");
 	printf("\n\t\t\t\t========================================================\n");
 
-		while(1)
-		{
+	while(1) {
 		printf("\n----------------------");
 		printf("\nchoose an option below");
 		printf("\n----------------------");
@@ -38,32 +37,26 @@ int main()
 		printf("\n8.exit");
 		printf("\n----------------------\n");
 		scanf("%d",&a);
-		switch (a)
-		{
-			case 1:
-			{
+		switch (a) {
+			case 1: {
 				password();
 				add();	
 				break;
 			}
-			case 2:
-			{	
+			case 2: {	
 				password();
 				del();
 				break;
 			}
-			case 3:
-			{
+			case 3: {
 				password();
 				modify();
 				break;
 			}
-			case 4:
-			{
+			case 4: {
 				marksheet();
 				break;	
-			}
-			case 5:
+			} case 5:
 			{
 				record();
 				break;
@@ -218,9 +211,6 @@ FILE *fp,*fp1;
 struct STUDENT s,s1;
 int id,found=0;
 
-fp=fopen("MINI_PROJECT_IN_C.DAT","rb");
-fp1=fopen("temp.dat","wb");
-
 printf("\nEnter student roll no you want to Delete:");
 scanf("%d",&id);
 while(1)
@@ -266,119 +256,100 @@ fwrite(&s,sizeof(s),1,fp);
 fclose(fp);
 fclose(fp1);
 }
-void marksheet()
-{
-FILE *fp;
-struct STUDENT s;
-int id,found=0;
-fp=fopen("MINI_PROJECT_IN_C.DAT","rb");
-printf("\nEnter the student roll no:");
-scanf("%d",&id);
-while(1)
-{
-fread(&s,sizeof(s),1,fp);
-if(feof(fp))
-{
-break;
-}
-if(s.roll_no==id)
-{
-found=1;
-printf("\n========================================================\n\n");
-printf("\t\t Student Marksheet of %d\n\n",s.roll_no);
-printf("========================================================\n\n");
 
-		printf("rollno:%d\t",s.roll_no);
-		printf("name:%s\t",s.name);
-		printf("maths:%d\t",s.maths);
-		printf("physics:%d\t",s.physics);
-		printf("chemistry:%d\t",s.chemistry);
-		printf("total:%d\t",s.total);
-		printf("average:%2f\n",s.avg);
-
-printf("========================================================\n\n");
-}
-}
-if(found==0)
-{
-printf("\nSorry No Record Found");
-}
-fclose(fp);
-}
-void modify()
-{
-FILE *fp,*fp1;
-struct STUDENT s;
-int id,found=0;
-
-fp=fopen("MINI_PROJECT_IN_C.DAT","rb");
-fp1=fopen("temp.dat","wb");
-
-printf("\nEnter student roll no you want to Modify:");
-scanf("%d",&id);
-
-while(1)
-{
-fread(&s,sizeof(s),1,fp);
-
-if(feof(fp))
-{
-break;
-}
-if(s.roll_no==id)
-{
-found=1;
-		printf("enter roll no for record\n");
-		scanf("%d",&s.roll_no);	
-		//fflush(stdin);
-		printf("enter name\n");
-		scanf("%s",s.name);
-		printf("enter age\n");
-		scanf("%d",&s.age);
-		printf("enter maths marks\n");
-		scanf("%d",&s.maths);
-		printf("enter physics marks\n");
-		scanf("%d",&s.physics);
-		printf("enter chemistry marks\n");
-		scanf("%d",&s.chemistry);
-		s.total=s.maths+s.physics+s.chemistry;
-		s.avg=s.total/3;
-fwrite(&s,sizeof(s),1,fp1);
-}
-else
-{
-fwrite(&s,sizeof(s),1,fp1);
-}
-}
-fclose(fp);
-fclose(fp1);
-
-if(found==0)
-{
-printf("Sorry No Record Found\n\n");
-}
-else
-{
-fp=fopen("MINI_PROJECT_IN_C.DAT","wb");
-fp1=fopen("temp.dat","rb");
-
-while(1)
-{
-fread(&s,sizeof(s),1,fp1);
-
-if(feof(fp1))
-{
-break;
-}
-fwrite(&s,sizeof(s),1,fp);
+void marksheet() {
+	FILE *fp;
+	struct STUDENT s;
+	int id,found=0;
+	fp=fopen("MINI_PROJECT_IN_C.DAT","rb");
+	printf("\nEnter the student roll no:");
+	scanf("%d",&id);
+	while(1) {
+		fread(&s,sizeof(s),1,fp);
+		if(feof(fp)) {
+			break;
+		}
+		if(s.roll_no==id) {
+			found=1;
+			printf("\n========================================================\n\n");
+			printf("\t\t Student Marksheet of %d\n\n",s.roll_no);
+			printf("========================================================\n\n");
+			printf("rollno:%d\t",s.roll_no);
+			printf("name:%s\t",s.name);
+			printf("maths:%d\t",s.maths);
+			printf("physics:%d\t",s.physics);
+			printf("chemistry:%d\t",s.chemistry);
+			printf("total:%d\t",s.total);
+			printf("average:%2f\n",s.avg);
+			printf("========================================================\n\n");
+		}
+	}
+	if (found==0) {
+		printf("\nSorry No Record Found");
+	}
+	fclose(fp);
 }
 
+void modify() {
+	FILE *fp,*fp1;
+	struct STUDENT s;
+	int id,found=0;
+
+	fp=fopen("MINI_PROJECT_IN_C.DAT","rb");
+	fp1=fopen("temp.dat","wb");
+
+	printf("\nEnter student roll no you want to Modify:");
+	scanf("%d",&id);
+
+	while(1) {
+		fread(&s,sizeof(s),1,fp);
+
+		if(feof(fp)) {
+			break;
+		}
+		if(s.roll_no==id) {
+			found=1;
+			printf("enter roll no for record\n");
+			scanf("%d",&s.roll_no);	
+			//fflush(stdin);
+			printf("enter name\n");
+			scanf("%s",s.name);
+			printf("enter age\n");
+			scanf("%d",&s.age);
+			printf("enter maths marks\n");
+			scanf("%d",&s.maths);
+			printf("enter physics marks\n");
+			scanf("%d",&s.physics);
+			printf("enter chemistry marks\n");
+			scanf("%d",&s.chemistry);
+			s.total=s.maths+s.physics+s.chemistry;
+			s.avg=s.total/3;
+			fwrite(&s,sizeof(s),1,fp1);
+		} else {
+			fwrite(&s,sizeof(s),1,fp1);
+		}
+	}
+	fclose(fp);
+	fclose(fp1);
+
+	if(found==0) {
+		printf("Sorry No Record Found\n\n");
+	} else {
+		fp=fopen("MINI_PROJECT_IN_C.DAT","wb");
+		fp1=fopen("temp.dat","rb");
+
+		while(1) {
+			fread(&s,sizeof(s),1,fp1);
+
+			if(feof(fp1)) { break; }
+			fwrite(&s,sizeof(s),1,fp);
+		}
+	}
+	fclose(fp);
+	fclose(fp1);
 }
-fclose(fp);
-fclose(fp1);
-}
-void changePassword()
-{
+
+void changePassword() {
 	FILE *fp;
 	int i;
 	char ch[6],c[6],count=0;
@@ -387,18 +358,14 @@ void changePassword()
 	scanf("%s",ch);
 	printf("\nre-enter password");
 	scanf("%s",c);
-	for(i=0;i<6;i++)
-	{
+	for(i=0;i<6;i++) {
 		if(ch[i]==c[i])
 		count++;
 	}
-	if(count==6)
-	{
-	fprintf(fp,"%s",ch);
-	printf("\npassword successfully changed");
-	}
-	else
-	{
+	if(count==6) {
+		fprintf(fp,"%s",ch);
+		printf("\npassword successfully changed");
+	} else {
 		printf("\nnot matching");
 		changePassword();
 	}	
