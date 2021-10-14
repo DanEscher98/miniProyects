@@ -1,8 +1,7 @@
 import { TodoItem } from "./todoItem"
 import { TodoCollection } from "./todoCollection"
 import * as inquirer from 'inquirer';
-
-let showCompleted = true;
+// import { JsonTodoCollection } from "./jsonTodoCollection";
 
 function displayTodoList(collection: TodoCollection) : void {
 	console.log(`${collection.userName}\'s Todo List `
@@ -79,8 +78,7 @@ function promptUser(): void {
 					promptComplete(collection);
 				} else {
 					promptUser();
-				}
-				break;
+				} break;
 			case Commands.Purge:
 				collection.removeCompleted();
 				promptUser();
@@ -97,6 +95,7 @@ let todos = [
 	new	TodoItem(4, "Call Joe", true)
 ];
 
+let showCompleted = true;
 let collection: TodoCollection = new TodoCollection("Daniel", todos);
 collection.addTodo("Go for run");
 collection.addTodo("Do the laundry")
