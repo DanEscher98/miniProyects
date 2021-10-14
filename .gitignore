@@ -7,9 +7,7 @@ __pycache__/
 hawapp/.stack-work/
 *.cabal
 
-node_modules/
-/dist
-/tmp
+WebPage/TS-first/{node_modules, dist, tmp}/
 
 # Compiled files
 *.o
