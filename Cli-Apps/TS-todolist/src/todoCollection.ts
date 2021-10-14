@@ -8,7 +8,7 @@ import { TodoItem } from "./todoItem";
 export class TodoCollection {
 	private nextId: number = 1;
 	// Use of geneneric object Map
-	private itemMap = new Map<number, TodoItem>();
+	protected itemMap = new Map<number, TodoItem>();
 	constructor(public userName: string,
 				public todoItems: TodoItem[] = []) {
 		// Initialize the associative array
