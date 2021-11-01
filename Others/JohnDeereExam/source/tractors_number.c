@@ -6,7 +6,7 @@
 #include <string.h>
 #include "lists_vectors.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[argc+1]) {
 	srand(time(NULL));
 	int size_a, size_b;
 	bool sorted = false;
@@ -42,5 +42,5 @@ int main(int argc, char *argv[]) {
 	free(vec_a.values);
 	freeList(ls_c);
 	horizontalLine();
-	return 0;
+	return EXIT_SUCCESS;
 }
