@@ -6,8 +6,8 @@
 #include <string.h>
 #include "lists_vectors.h"
 
-int main(int argc, char *argv[]) {
-	srand(time(NULL));
+int main(int argc, char** argv) {
+	srand((unsigned int)time(NULL));
 	int size;
 	bool sorted = false;
 	if (argc > 1) {
@@ -34,7 +34,8 @@ int main(int argc, char *argv[]) {
 	printf("All clones have been removed (size: %d):\n",
 			ls_a.length);
 	printList(ls_a);
+
 	freeList(ls_a);
 	horizontalLine();
-	return 0;
+	return EXIT_SUCCESS;
 }

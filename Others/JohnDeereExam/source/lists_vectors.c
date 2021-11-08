@@ -9,9 +9,9 @@
 //## Vector Functions #################
 
 vector initVector(int length, bool zeros, bool sorted) {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	vector new_vector = (vector){ .length = length };
-	new_vector.values = malloc(sizeof(int)*length);
+	new_vector.values = malloc(sizeof(int)*(unsigned int)length);
 	if (zeros) {
 		for (int i=0; i < length; i++) {
 			new_vector.values[i] = 0;
@@ -56,7 +56,7 @@ void freeList(list ls) {
 }
 
 list initRandomList(int length, bool sorted) {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	list new_ls = initList();
 	if (sorted) {
 		// The sorted list is in reverse order
@@ -91,7 +91,6 @@ node *deleteThisNode(node *a) {
 		free(a);
 		return aux;
 	}
-	exit (1);
 }
 
 node *newNode(node *link, int value) {
@@ -235,7 +234,7 @@ int parseInt(char *value) {
 	errno = 0;
 	// The problems set maxium size at 1000, so the max
 	// length of a number is set to 4 digits
-	num = strtol(value, &endptr, 10);
+	num = (int)strtol(value, &endptr, 10);
 	if (errno == ERANGE) {
 		fputs("ERR => Number too big\n", stdout);
 		exit(1);
