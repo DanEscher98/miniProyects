@@ -6,8 +6,8 @@
 #include <string.h>
 #include "lists_vectors.h"
 
-int main(int argc, char* argv[argc+1]) {
-	srand(time(NULL));
+int main(int argc, char** argv) {
+	srand((unsigned int)time(NULL));
 	int size_a, size_b;
 	bool sorted = false;
 	if (argc > 2) {

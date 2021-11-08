@@ -25,11 +25,11 @@ function SelectPkgMgr() {
 		PkgMgr=pacman	# For Arch based distros
 		pacman -Syu
 	else
-		Msg="Unable to define the Package Manager."
+		echo "Unable to define the Package Manager."
 		error=7
 		Quit $error
 	fi
-	printf "Using \'$PkgMgr\' as Package Manager\n\n"
+	printf 'Using %s as Package Manager\n\n' "$PkgMgr"
 }
 
 
@@ -37,8 +37,8 @@ function SelectPkgMgr() {
 ## Count how many lines writed ########
 function CountLines() {
 	for i in $(find . -type f -not -path "./target" \
-		| grep -v -E "*.out|*.pdf"); do
-		wc -l $i;
+		| grep -v -E ".out|.pdf"); do
+		wc -l "$i";
 	done | sort -n | tee /dev/tty \
 		| awk '{ print $2 }' \
 		| xargs cat | wc -l \
@@ -53,12 +53,12 @@ function InstallProcess() {
 	local flags=$3
 
 	echo "Installing $package ..."
-	yes | $PkgMgr install $package &> /dev/null
-	if command -v $executable; then
+	yes | "$PkgMgr" install "$package" &> /dev/null
+	if command -v "$executable"; then
 		echo "Ok => The package $package has been installed"
 	else
 		echo "Err => The package $package hasn't been installed"
-		ERRORS=$(($ERRORS+1))
+		ERRORS=$((ERRORS+1))
 	fi
 	printf "\n"
 }
@@ -70,22 +70,22 @@ function OptionalInstall() {
 	local executable=$2
 	local flags=$3
 	echo "Do you want to install $package?"
-	read -p "$* [y/n]: " yn
+	read -p -r "$* [y/n]: " yn
 	case $yn in
 		[Yy]*) echo "Ok, this may take a little bit ...";
-			InstallProcess $package $executable $flags;;
+			InstallProcess "$package" "$executable" "$flags";;
 		[Nn]*) printf "Aborted\n\n";;
 	esac
 }
 
 #######################################
 ## Main program #######################
-GREEN='\033[0;32m'
-NC='\033[0m' # No Color
+#GREEN='\033[0;32m'
+#NC='\033[0m' # No Color
 ERRORS=0
 
 # Check for root
-if [ `id -u` != 0 ]; then
+if [ "$(id -u)" != 0 ]; then
 	echo "┌-------------------------------------------┐"
 	echo "| You must be root user to run this program |"
 	echo "└-------------------------------------------┘"
@@ -105,7 +105,7 @@ else
 	exit 1
 fi
 
-if [ $ERRORS -eq 0 ]; then
+if [ "$ERRORS" -eq 0 ]; then
 	printf "\nEverything ready!\n"
 	echo "Type 'make run' to compile and run the programs"
 else
@@ -115,3 +115,4 @@ fi
 
 ## End of program #####################
 #######################################
+

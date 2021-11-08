@@ -11,7 +11,7 @@ TPATH_2 = $(TPATH)/$(FILE_2)
 SPATH_3 = $(SPATH)/$(FILE_3)
 
 HEADERS	= $(SPATH)/lists_vectors.c
-FLAGS 	= -Wall -Wextra -pedantic
+FLAGS 	= -Wall -pedantic -std=c99
 
 $(TPATH_1).out : $(SPATH_1).c
 	clang $(SPATH_1).c $(FLAGS) $(HEADERS) -o $(TPATH_1).out
