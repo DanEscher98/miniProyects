@@ -53,4 +53,3 @@ instance (Show Patient) where
                     , msgVal "Blood Type:\t" b
                     , replicate 25 '*'
                     ]
-

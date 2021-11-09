@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # Directories
-hawapp/.stack-work/
+.stack-work/
 *.cabal
 
 WebPage/TS-first/{node_modules, dist, tmp}/
@@ -35,6 +35,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+target/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
