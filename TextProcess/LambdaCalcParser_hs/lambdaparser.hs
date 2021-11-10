@@ -15,3 +15,10 @@ toString = aux 0 where
         Hol hol     -> aux level hol
         App fun arg -> "(" ++ aux level fun ++ " " ++
             aux level arg ++ ")"
+
+reduce :: Term -> Term
+reduce (Hol hol)    = hol
+reduce (Var index)   = Var index
+reduce (Lam body)   = Lam (reduce . body)
+reduce (App fun arg)= case reduce fun of
+    Hol fhol    -> 2
