@@ -13,7 +13,7 @@
 #######################################
 ## Select Package Manager #############
 function SelectPkgMgr() {
-	# get the Distribution, release and architecture.
+	# get the Distribution, release and architecture
 	if command -v apt &> /dev/null; then
 		PkgMgr=apt	# For Debian based distros
 		apt update
