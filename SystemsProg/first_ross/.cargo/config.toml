@@ -19,5 +19,14 @@ build-std-features = ["compiler-builtins-mem"]
 # Tells cargo that it should recompile the core and compiler_builtins
 build-std = ["core", "compiler_builtins"]
 
+
+# Keys for bootloader
+[package.metadata.bootimage]
+run-command = ["qemu-system-x86_64", "-drive",
+	"format=raw,file=target/x86_64-ross/debug/bootimage-first_ross.bin"]
+
+[package.metadata.bootloader.target]
+target = "x86_64-ross.json"
+
 [build]
 target = "x86_64-ross.json"
