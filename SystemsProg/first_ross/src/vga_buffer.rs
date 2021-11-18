@@ -2,24 +2,12 @@ use volatile::Volatile;
 use core::fmt;
 use lazy_static::lazy_static;
 use spin::Mutex;
+mod codepage437;
 
 /* The VGA text buffer is a special memory area mapped to the VGA
      * hardware that contains the contents displayed on screen. It
      * normally consists of 25 lines that each contain 80 character 
      * cells. The buffer is located at address 0xb8000. */
-
-lazy_static! {
-    // the spinning Mutex add safe interior mutability to our static
-    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
-        column_position: 0,
-        color_code: ColorCode::new(Color::Yellow, Color::Black),
-        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) }
-        // 1st: cast the integer 0xb8000 as an mutable raw pointer
-        // 2nd: convert it to a mutable reference by dereferencing
-        //      and inmediately borrowing it again (&mut)
-
-    });
-}
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -68,6 +56,19 @@ const BUFFER_WIDTH: usize = 80;
 // Ensure that it has the same emory layout as its single filed
 struct Buffer {
     chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT]
+}
+
+lazy_static! {
+    // the spinning Mutex add safe interior mutability to our static
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
+        column_position: 0,
+        color_code: ColorCode::new(Color::Yellow, Color::Black),
+        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) }
+        // 1st: cast the integer 0xb8000 as an mutable raw pointer
+        // 2nd: convert it to a mutable reference by dereferencing
+        //      and inmediately borrowing it again (&mut)
+
+    });
 }
 
 pub struct Writer {
