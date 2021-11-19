@@ -39,7 +39,7 @@ function CountLines() {
 	for i in $(find . -type f -not -path "./target" \
 		| grep -v -E ".out|.pdf"); do
 		wc -l "$i";
-	done | sort -n | tee /dev/tty \
+	done | sort -n -r | tee /dev/tty \
 		| awk '{ print $2 }' \
 		| xargs cat | wc -l \
 		| xargs -I % echo "Total lines: " %
