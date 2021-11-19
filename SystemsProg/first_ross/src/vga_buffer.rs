@@ -41,6 +41,26 @@ impl ColorCode {
     }
 }
 
+pub struct Green(pub &'static str);
+impl fmt::Display for Green {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "\x1B[32m")?;
+        write!(f, "{}", self.0)?;
+        write!(f, "\x1B[0m")?;
+        Ok(())
+    }
+}
+
+pub struct Red(pub &'static str);
+impl fmt::Display for Red {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "\x1B[31m")?;
+        write!(f, "{}", self.0)?;
+        write!(f, "\x1B[0m")?;
+        Ok(())
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(C)]
 // This guarantess the correct field ordering like in a C struct
@@ -176,6 +196,29 @@ macro_rules! println {
 pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
     WRITER.lock().write_fmt(args).unwrap();
+}
+
+#[test_case]
+fn test_println_simple() {
+    println!("test_println_simple output");
+}
+
+#[test_case]
+fn test_println_many() {
+    for _ in 0..200 {
+        println!("test_println_many");
+    }
+}
+
+#[test_case]
+fn test_println_output() {
+    let s = "Some test string that fits on a single line";
+    println!("{}", s);
+    for (i, c) in s.chars().enumerate() {
+        let screen_char = WRITER.lock()
+            .buffer.chars[BUFFER_HEIGHT - 2][i].read();
+        assert_eq!(char::from(screen_char.ascii_character), c);
+    }
 }
 
 pub fn encode(c: char) -> Option<u8> {
