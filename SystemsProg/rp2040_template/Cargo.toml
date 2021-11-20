@@ -1,0 +1,83 @@
+[package]
+name = "rp2040_template"
+authors = ["the rp-rs team", "Jim Hodapp", "Daniel Sanchez"]
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+cortex-m = "0.7.3"			# Low level access to Cortex-M processors
+cortex-m-rt = "0.7.0"		# Minimal runtime / startup for Cortex-M microcontrollers
+embedded-hal = {			#  A Hardware Abstraction Layer (HAL) for embedded systems
+	version = "0.2.5", features = ["unproven"] }
+embedded-time = "0.12.0"	# Fully defined, inter-operable, ergonomic, and fast human-time units
+
+defmt = "0.2.0"				# A highly efficient logging framework that targets resource-constrained devices
+defmt-rtt = "0.2.0"			# Transmit defmt log messages over the RTT (Real-Time Transfer) protocol
+panic-probe = {				# Panic handler that exits `probe-run` with an error code
+	version = "0.2.0", features = ["print-defmt"] }
+
+rp2040-hal = {				# A Rust Embeded-HAL impl for the rp2040 microcontroller
+	git = git = "https://github.com/rp-rs/rp-hal", branch="main", features=["rt"] }
+rp2040-boot2 = {			# Raspberry Pi RP2040 SoC second stage bootloader.
+	git = "https://github.com/rp-rs/rp2040-boot2-rs", branch="main" }
+
+[features]
+default = ["defmt-default"]
+defmt-default = []
+defmt-trace = []
+defmt-debug = []
+defmt-info = []
+defmt-warn = []
+defmt-error = []
+
+# cargo build/run
+[profile.dev]
+codegen-units = 1
+debug = 2
+debug-assertions = true
+incremental = false
+opt-level = 3
+overflow-checks = true
+
+# cargo build/run --release
+[profile.release]
+codegen-units = 1
+debug = 2
+debug-assertions = false
+incremental = false
+lto = 'fat'
+opt-level = 3
+overflow-checks = false
+
+# dp not optimize proc-macro crates = faster builds from scratch
+[profile.dev.build-override]
+codegen-units = 8
+debug = false
+debug-assertions = false
+opt-level = 0
+overflow-checks = false
+
+[profile.release.build-override]
+codegen-units = 8
+debug = false
+debug-assertions = false
+opt-level = 0
+overflow-checks = false
+
+# cargo test
+[profile.test]
+codegen-units = 1
+debug = 2
+debug-assertions = true
+incremental = false
+opt-level = 3
+overflow-checks = true
+
+# cargo test --release
+[profile.bench]
+codege-units = 1
+debug = 2
+debug-assertions = false
+incremental = false
+lto = 'fat'
+opt-level = 3
