@@ -22,3 +22,10 @@ echo "ATTRS{idVendor}==\"$idVendor\"," \
 	"ATTRS{idProduct}==\"$idProduct\", MODE:=\"0666\"" \
 	| sudo tee -a /etc/udev/rules.d/99-openocd.rules
 sudo udevadm control --reload-rules
+
+# Change cargo to nightly
+rustup override set nightly
+rustup target install thumbv6m-none-eabi
+cargo install --git https://github.com/rp-rs/probe-run --branch main
+cargo install flip-link
+
