@@ -29,3 +29,13 @@ rustup target install thumbv6m-none-eabi
 cargo install --git https://github.com/rp-rs/probe-run --branch main
 cargo install flip-link
 
+# Load the app onto the target with gdb
+# Connect the raspberry pico
+cd "$HOME"/openocd || return
+openocd -f tlc/interface/picoprobe.cfg -f tlc/target/rp2040.cfg -s tcl
+cd - || return
+gdb-multiarch -q -ex "target extended-remote :3333" \
+	target/thumbv6m-none-eabi/debug/rp2040_template
+# In the GDB shell
+# (gdb) load
+# (gdb continue)
