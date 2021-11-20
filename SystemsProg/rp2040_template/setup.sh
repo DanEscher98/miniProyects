@@ -31,8 +31,8 @@ cargo install flip-link
 
 # Load the app onto the target with gdb
 # Connect the raspberry pico
-cd "$HOME"/openocd || return
-openocd -f tlc/interface/picoprobe.cfg -f tlc/target/rp2040.cfg -s tcl
+cd "$HOME"/openocd/tcl || return
+openocd -f interface/picoprobe.cfg -f target/rp2040.cfg -s tcl
 cd - || return
 gdb-multiarch -q -ex "target extended-remote :3333" \
 	target/thumbv6m-none-eabi/debug/rp2040_template
