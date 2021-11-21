@@ -58,6 +58,6 @@ fn main() -> ! {
         delay.delay_ms(500);
         info!("off!");
         led_pin.set_low().unwrap();
-        delay.delay_ms(500);
+        delay.delay_ms(1000);
     }
 }
