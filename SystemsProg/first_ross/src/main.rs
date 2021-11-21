@@ -9,11 +9,20 @@ use first_ross::println;
 
 #[no_mangle] // disable the name mangling
 pub extern "C" fn _start() -> ! {
-    println!("Hello World! {}", "Daniel");
+    println!("Hello {}! ^_^/", "Daniel");
+    first_ross::init();
+    x86_64::instructions::interrupts::int3();
+    fn stack_overflow() {
+        stack_overflow();
+    }
+    stack_overflow();
+    // unsafe {
+    //     *(0xdeadbeef as *mut u64) = 42;
+    // };
     // panic!("FIX THE SYSTEM");
     #[cfg(test)]
     test_main();
-    println!("Goodbye.");
+    println!("It did not crash!");
     loop {}
 }
 
