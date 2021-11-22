@@ -23,6 +23,12 @@ pub trait Testable {
     fn run(&self) -> ();
 }
 
+pub fn hlt_loop() -> ! {
+    loop {
+        x86_64::instructions::hlt();
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
 pub enum QemuExitCode {
@@ -61,7 +67,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("{}\n", Red("[failed]"));
     serial_println!("Error: {}\n", info);
     exit_qemu(QemuExitCode::Failed);
-    loop {}
+    hlt_loop();
     // The loop is needed because the compiler doesn't know htat the
     // `isa-debug-exit` device causes a program exit.
 }
@@ -72,7 +78,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
 pub extern "C" fn _start() -> ! {
     init();
     test_main();
-    loop {}
+    hlt_loop();
 }
 
 #[cfg(test)]

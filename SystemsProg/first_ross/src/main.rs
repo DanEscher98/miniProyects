@@ -23,7 +23,7 @@ pub extern "C" fn _start() -> ! {
     #[cfg(test)]
     test_main();
     println!("It did not crash!\n");
-    loop {}
+    first_ross::hlt_loop();
 }
 
 // this function is called on panic.
@@ -31,7 +31,7 @@ pub extern "C" fn _start() -> ! {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    first_ross::hlt_loop();
 }
 
 #[cfg(test)]
