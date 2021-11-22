@@ -12,17 +12,17 @@ pub extern "C" fn _start() -> ! {
     println!("Hello {}! ^_^/", "Daniel");
     first_ross::init();
     x86_64::instructions::interrupts::int3();
-    fn stack_overflow() {
-        stack_overflow();
-    }
-    stack_overflow();
+    // fn stack_overflow() {
+    //     stack_overflow();
+    // }
+    // stack_overflow();
     // unsafe {
     //     *(0xdeadbeef as *mut u64) = 42;
     // };
     // panic!("FIX THE SYSTEM");
     #[cfg(test)]
     test_main();
-    println!("It did not crash!");
+    println!("It did not crash!\n");
     loop {}
 }
 
