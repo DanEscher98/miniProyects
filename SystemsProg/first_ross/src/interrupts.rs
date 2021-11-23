@@ -2,6 +2,8 @@ use x86_64::structures::idt::{
     InterruptDescriptorTable, InterruptStackFrame};
 use lazy_static::lazy_static;
 use pic8259::ChainedPics;
+use x86_64::structures::idt::PageFaultErrorCode;
+use crate::hlt_loop;
 use spin;
 use crate::{println, print};
 use crate::gdt;
@@ -16,7 +18,10 @@ lazy_static! {
         }
         idt[InterruptIndex::Timer.as_usize()]
             .set_handler_fn(timer_interrupt_handler);
-        return idt
+        idt[InterruptIndex::Keyboard.as_usize()]
+            .set_handler_fn(keyboard_interrupt_handler);
+        idt.page_fault.set_handler_fn(page_fault_handler);
+        return idt;
     };
 }
 
@@ -25,13 +30,28 @@ pub fn init_idt() {
 }
 
 extern "x86-interrupt" fn breakpoint_handler(
-    stack_frame: InterruptStackFrame) {
+    stack_frame: InterruptStackFrame
+) {
     println!("EXCEPTION: BREAKPOINT\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn double_fault_handler(
-    stack_frame: InterruptStackFrame, _error_code: u64) -> ! {
+    stack_frame: InterruptStackFrame, _error_code: u64
+) -> ! {
     panic!("EXCEPTION: DOUBLE FAULT\n{:#?}", stack_frame);
+}
+
+extern "x86-interrupt" fn page_fault_handler(
+    stack_frame: InterruptStackFrame,
+    error_code: PageFaultErrorCode
+) {
+    use x86_64::registers::control::Cr2;
+
+    println!("Exception: PAGE FAULT");
+    println!("Accessed Address: {:?}", Cr2::read());
+    println!("Error Code: {:?}", error_code);
+    println!("{:#?}", stack_frame);
+    hlt_loop();
 }
 
 
@@ -46,7 +66,8 @@ pub const PICS: spin::Mutex<ChainedPics> =
 #[derive(Debug, Clone, Copy)]
 #[repr(u8)]
 pub enum InterruptIndex {
-        Timer = PIC_1_OFFSET
+    Timer = PIC_1_OFFSET,
+    Keyboard
 }
 
 impl InterruptIndex {
@@ -59,11 +80,44 @@ impl InterruptIndex {
 }
 
 extern "x86-interrupt" fn timer_interrupt_handler(
-    _stack_frame: InterruptStackFrame) {
+    _stack_frame: InterruptStackFrame
+) {
     print!(".");
     unsafe {
         PICS.lock().notify_end_of_interrupt(
             InterruptIndex::Timer.as_u8());
+    }
+}
+
+extern "x86-interrupt" fn keyboard_interrupt_handler(
+    _stack_frame: InterruptStackFrame
+) {
+    use pc_keyboard::{
+        layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
+    use spin::Mutex;
+    use x86_64::instructions::port::Port;
+    lazy_static! {
+        static ref KEYBOARD: Mutex<Keyboard<layouts::Us104Key, ScancodeSet1>> =
+            Mutex::new(Keyboard::new(
+                    layouts::Us104Key, ScancodeSet1, HandleControl::Ignore));
+    }
+
+    let mut keyboard = KEYBOARD.lock();
+    // Read from the data port (0x60) of the PS/2 controller
+    // Codes: https://wiki.osdev.org/Keyboard#Scan_Code_Set_1
+    let mut port = Port::new(0x60);
+    let scancode: u8 = unsafe { port.read() };
+    if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
+        if let Some(key) = keyboard.process_keyevent(key_event) {
+            match key {
+                DecodedKey::Unicode(character) => print!("{}", character),
+                DecodedKey::RawKey(key) => print!("{:?}", key)
+            }
+        }
+    }
+    unsafe {
+        PICS.lock().notify_end_of_interrupt(
+            InterruptIndex::Keyboard.as_u8());
     }
 }
 
