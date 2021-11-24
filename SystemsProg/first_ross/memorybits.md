@@ -19,3 +19,5 @@ A byte is 8 bits, or 2 nibbles (2^3)
 | exabyte  (EB)  | $10^{18}$ | exbibyte (EiB) | $2^{60}$ | $15.3\%$ |
 | zettabyte (ZB) | $10^{21}$ | zebibyte (ZiB) | $2^{70}$ | $18.1\%$ |
 | yottabyte (YB) | $10^{24}$ | yobibyte (YiB) | $2^{80}$ | $20.9\%$ |
+
+$$100 (1 - \frac{10^{3x}}{2^{10x}})$$
