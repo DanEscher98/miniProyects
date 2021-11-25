@@ -16,9 +16,22 @@ fn main() {
         })
         .insert_resource(ClearColor(Color::rgb(0.04, 0.04, 0.04)))
         .add_startup_system(setup.system())
-        .add_startup_stage("game_setup", SystemStage::single(spawn_snake.system()))
-        .add_system(snake_movement.system())
-        .add_system(snake_movement.system())
+        .add_startup_stage("game_setup",
+            SystemStage::single(spawn_snake.system()))
+        .add_system(
+            snake_movement_input
+                .system()
+                .label(SnakeMovement::Input)
+                .before(SnakeMovement::Movement)
+        )
+        .add_system_set(
+            SystemSet::new()
+                .with_run_criteria(FixedTimestep::step(0.150))
+                .with_system(
+                    snake_movement
+                        .system()
+                        .label(SnakeMovement::Movement))
+        )
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()
@@ -43,7 +56,18 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     });
 }
 
-struct SnakeHead;
+struct SnakeHead {
+    direction: Direction
+}
+
+#[derive(SystemLabel, Debug, Hash, PartialEq, Eq, Clone)]
+pub enum SnakeMovement {
+    Input,
+    Movement,
+    Eating,
+    Growth
+}
+
 struct Materials {
     head_material: Handle<ColorMaterial>,
     food_material: Handle<ColorMaterial>
@@ -56,30 +80,40 @@ fn spawn_snake(mut commands: Commands, materials: Res<Materials>) {
             sprite: Sprite::new(Vec2::new(10.0, 10.0)),
             ..Default::default()
         })
-        .insert(SnakeHead)
+        .insert(SnakeHead { direction: Direction::Up })
         .insert(Position { x: 3, y: 3 })
         .insert(Size::square(0.8));
 }
 
-fn snake_movement(
+fn snake_movement_input(
     keyboard_input: Res<Input<KeyCode>>,
-    // The With type allows us to say “I want entities that have a
-    // snake head, but I don’t care about the snake head component
-    // itself, just give me the transform”.
-    mut head_positions: Query<&mut Position, With<SnakeHead>>,
+    mut heads: Query<&mut SnakeHead>
 ) {
-    for mut pos in head_positions.iter_mut() {
-        if keyboard_input.pressed(KeyCode::Left) {
-            pos.x -= 1;
+    if let Some(mut head) = heads.iter_mut().next() {
+        let dir: Direction = if keyboard_input.pressed(KeyCode::Left) {
+            Direction::Left
+        } else if keyboard_input.pressed(KeyCode::Down) {
+            Direction::Down
+        } else if keyboard_input.pressed(KeyCode::Right) {
+            Direction::Right
+        } else if keyboard_input.pressed(KeyCode::Up) {
+            Direction::Up
+        } else {
+            head.direction
+        };
+        if dir != head.direction.opposite() {
+            head.direction = dir;
         }
-        if keyboard_input.pressed(KeyCode::Right) {
-            pos.x += 1;
-        }
-        if keyboard_input.pressed(KeyCode::Down) {
-            pos.y -= 1;
-        }
-        if keyboard_input.pressed(KeyCode::Up) {
-            pos.y += 1;
+    }
+}
+
+fn snake_movement(mut heads: Query<(&mut Position, &SnakeHead)>) {
+    if let Some((mut head_pos, head)) = heads.iter_mut().next() {
+        match &head.direction {
+            Direction::Left => { head_pos.x -= 1; }
+            Direction::Right => { head_pos.x += 1; }
+            Direction::Down => { head_pos.y -= 1; }
+            Direction::Up => { head_pos.y += 1; } 
         }
     }
 }
@@ -149,5 +183,24 @@ fn position_translation(
             convert(pos.y as f32, window.height() as f32, ARENA_HEIGHT as f32),
             0.0
         );
+    }
+}
+
+#[derive(PartialEq, Copy, Clone)]
+enum Direction {
+    Left,
+    Up,
+    Right,
+    Down
+}
+
+impl Direction {
+    fn opposite(self) -> Self {
+        match self {
+            Self::Left => Self::Right,
+            Self::Right => Self::Left,
+            Self::Down => Self::Up,
+            Self::Up => Self::Down
+        }
     }
 }
