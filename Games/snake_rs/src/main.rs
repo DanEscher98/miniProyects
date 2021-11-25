@@ -30,6 +30,7 @@ fn main() {
                 .with_system(
                     snake_movement.system().label(SnakeMovement::Movement))
         )
+        .insert_resource(SnakeTail::default())
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()
@@ -50,6 +51,7 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     commands.insert_resource(Materials {
         head_material: materials.add(Color::rgb(0.7, 0.7, 0.7).into()),
+        segment_material: materials.add(Color::rgb(0.3, 0.3, 0.3).into()),
         food_material: materials.add(Color::rgb(1.0, 0.0, 1.0).into())
     });
 }
@@ -65,23 +67,58 @@ pub enum SnakeMovement {
 struct SnakeHead{
     direction: Direction
 }
+
+struct SnakeSegment;
+
+#[derive(Default)]
+struct SnakeTail(Vec<Entity>);
+
 struct Materials {
     head_material: Handle<ColorMaterial>,
+    segment_material: Handle<ColorMaterial>,
     food_material: Handle<ColorMaterial>
 }
 
-fn spawn_snake(mut commands: Commands, materials: Res<Materials>) {
+fn spawn_snake(
+    mut commands: Commands,
+    materials: Res<Materials>,
+    mut segments: ResMut<SnakeTail>
+) {
+    segments.0 = vec![
+        commands
+            .spawn_bundle(SpriteBundle {
+                material: materials.head_material.clone(),
+                sprite: Sprite::new(Vec2::new(10.0, 10.0)),
+                ..Default::default()
+            })
+            .insert(SnakeHead{
+                direction: Direction::Up
+            })
+            .insert(Position { x: 3, y: 3 })
+            .insert(Size::square(0.8))
+            .id(),
+        spawn_segment(
+            commands,
+            &materials.segment_material,
+            Position { x: 3, y: 2 }
+        )
+    ];
+}
+
+fn spawn_segment(
+    mut commands: Commands,
+    material: &Handle<ColorMaterial>,
+    position: Position
+) -> Entity {
     commands
         .spawn_bundle(SpriteBundle {
-            material: materials.head_material.clone(),
-            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
+            material: material.clone(),
             ..Default::default()
         })
-        .insert(SnakeHead{
-            direction: Direction::Up
-        })
-        .insert(Position { x: 3, y: 3 })
-        .insert(Size::square(0.8));
+        .insert(SnakeSegment)
+        .insert(position)
+        .insert(Size::square(0.65))
+        .id()
 }
 
 fn snake_movement_input(
