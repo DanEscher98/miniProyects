@@ -28,9 +28,7 @@ fn main() {
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(0.150))
                 .with_system(
-                    snake_movement
-                        .system()
-                        .label(SnakeMovement::Movement))
+                    snake_movement.system().label(SnakeMovement::Movement))
         )
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
@@ -56,10 +54,6 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     });
 }
 
-struct SnakeHead {
-    direction: Direction
-}
-
 #[derive(SystemLabel, Debug, Hash, PartialEq, Eq, Clone)]
 pub enum SnakeMovement {
     Input,
@@ -68,6 +62,9 @@ pub enum SnakeMovement {
     Growth
 }
 
+struct SnakeHead{
+    direction: Direction
+}
 struct Materials {
     head_material: Handle<ColorMaterial>,
     food_material: Handle<ColorMaterial>
@@ -80,7 +77,9 @@ fn spawn_snake(mut commands: Commands, materials: Res<Materials>) {
             sprite: Sprite::new(Vec2::new(10.0, 10.0)),
             ..Default::default()
         })
-        .insert(SnakeHead { direction: Direction::Up })
+        .insert(SnakeHead{
+            direction: Direction::Up
+        })
         .insert(Position { x: 3, y: 3 })
         .insert(Size::square(0.8));
 }
@@ -92,10 +91,10 @@ fn snake_movement_input(
     if let Some(mut head) = heads.iter_mut().next() {
         let dir: Direction = if keyboard_input.pressed(KeyCode::Left) {
             Direction::Left
-        } else if keyboard_input.pressed(KeyCode::Down) {
-            Direction::Down
         } else if keyboard_input.pressed(KeyCode::Right) {
             Direction::Right
+        } else if keyboard_input.pressed(KeyCode::Down) {
+            Direction::Down
         } else if keyboard_input.pressed(KeyCode::Up) {
             Direction::Up
         } else {
@@ -104,16 +103,18 @@ fn snake_movement_input(
         if dir != head.direction.opposite() {
             head.direction = dir;
         }
-    }
+    } 
 }
 
-fn snake_movement(mut heads: Query<(&mut Position, &SnakeHead)>) {
+fn snake_movement(
+    mut heads: Query<(&mut Position, &SnakeHead)>
+) {
     if let Some((mut head_pos, head)) = heads.iter_mut().next() {
         match &head.direction {
             Direction::Left => { head_pos.x -= 1; }
             Direction::Right => { head_pos.x += 1; }
             Direction::Down => { head_pos.y -= 1; }
-            Direction::Up => { head_pos.y += 1; } 
+            Direction::Up => { head_pos.y += 1; }
         }
     }
 }
@@ -197,10 +198,10 @@ enum Direction {
 impl Direction {
     fn opposite(self) -> Self {
         match self {
-            Self::Left => Self::Right,
-            Self::Right => Self::Left,
             Self::Down => Self::Up,
-            Self::Up => Self::Down
+            Self::Up => Self::Down,
+            Self::Right => Self::Left,
+            Self::Left => Self::Right
         }
     }
 }
