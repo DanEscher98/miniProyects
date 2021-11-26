@@ -29,8 +29,20 @@ fn main() {
                 .with_run_criteria(FixedTimestep::step(0.150))
                 .with_system(
                     snake_movement.system().label(SnakeMovement::Movement))
+                .with_system(
+                    snake_eating
+                        .system()
+                        .label(SnakeMovement::Eating)
+                        .after(SnakeMovement::Movement))
+                .with_system(
+                    snake_growth
+                        .system()
+                        .label(SnakeMovement::Growth)
+                        .after(SnakeMovement::Eating))
         )
         .insert_resource(SnakeTail::default())
+        .insert_resource(LastTailPosition::default())
+        .add_event::<GrowthEvent>()
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()
@@ -50,8 +62,8 @@ fn main() {
 fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     commands.insert_resource(Materials {
-        head_material: materials.add(Color::rgb(0.7, 0.7, 0.7).into()),
-        segment_material: materials.add(Color::rgb(0.3, 0.3, 0.3).into()),
+        head_material: materials.add(Color::rgb(0.1, 1.0, 1.0).into()),
+        segment_material: materials.add(Color::rgb(0.3, 1.0, 0.3).into()),
         food_material: materials.add(Color::rgb(1.0, 0.0, 1.0).into())
     });
 }
@@ -72,6 +84,10 @@ struct SnakeSegment;
 
 #[derive(Default)]
 struct SnakeTail(Vec<Entity>);
+
+#[derive(Default)]
+struct LastTailPosition(Option<Position>);
+
 
 struct Materials {
     head_material: Handle<ColorMaterial>,
@@ -146,7 +162,8 @@ fn snake_movement_input(
 fn snake_movement(
     segments: ResMut<SnakeTail>,
     mut heads: Query<(Entity, &SnakeHead)>,
-    mut positions: Query<&mut Position>
+    mut positions: Query<&mut Position>,
+    mut last_tail_position: ResMut<LastTailPosition>
 ) {
     if let Some((head_entity, head)) = heads.iter_mut().next() { 
         let mut head_pos = positions.get_mut(head_entity).unwrap();
@@ -161,14 +178,51 @@ fn snake_movement(
             .0.iter()
             .map(|e| *positions.get_mut(*e).unwrap())
             .collect::<Vec<Position>>();
+
         segment_positions
             .iter()
             .zip(segments.0.iter().skip(1))
             .for_each(|(pos, segment)| {
                 *positions.get_mut(*segment).unwrap() = *pos;
             });
+
+        last_tail_position.0 = Some(*segment_positions.last().unwrap());
     }
 }
+
+fn snake_eating(
+    mut commands: Commands,
+    mut growth_writer: EventWriter<GrowthEvent>,
+    food_positions: Query<(Entity, &Position), With<Food>>,
+    head_positions: Query<&Position, With<SnakeHead>>
+) {
+    for head_pos in head_positions.iter() {
+        for (ent, food_pos) in food_positions.iter() {
+            if food_pos == head_pos {
+                commands.entity(ent).despawn();
+                growth_writer.send(GrowthEvent);
+            }
+        }
+    }
+}
+
+fn snake_growth(
+    commands: Commands,
+    last_tail_position: Res<LastTailPosition>,
+    mut segments: ResMut<SnakeTail>,
+    mut growth_reader: EventReader<GrowthEvent>,
+    materials: Res<Materials>
+) {
+    if growth_reader.iter().next().is_some() {
+        segments.0.push(spawn_segment(
+            commands,
+            &materials.segment_material,
+            last_tail_position.0.unwrap()
+        ));
+    }
+}
+
+struct GrowthEvent;
 
 struct Food;
 
