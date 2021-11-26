@@ -106,14 +106,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     first_ross::hlt_loop();
 }
 
-// this function is called on panic.
-#[cfg(not(test))]
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    println!("{}", info);
-    first_ross::hlt_loop();
-}
-
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
