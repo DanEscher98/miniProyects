@@ -1,3 +1,5 @@
+// Inspired by https://mbuffett.com/posts/bevy-snake-tutorial/
+
 use bevy::prelude::*;
 use bevy::render::pass::ClearColor;
 use rand::prelude::random;
@@ -43,6 +45,7 @@ fn main() {
         .insert_resource(SnakeTail::default())
         .insert_resource(LastTailPosition::default())
         .add_event::<GrowthEvent>()
+        .add_system(game_over.system().after(SnakeMovement::Movement))
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()
@@ -54,6 +57,7 @@ fn main() {
                 .with_run_criteria(FixedTimestep::step(1.0))
                 .with_system(food_spawner.system())
         )
+        .add_event::<GameOverEvent>()
         .add_plugins(DefaultPlugins)
         .run();
 }
@@ -163,9 +167,15 @@ fn snake_movement(
     segments: ResMut<SnakeTail>,
     mut heads: Query<(Entity, &SnakeHead)>,
     mut positions: Query<&mut Position>,
-    mut last_tail_position: ResMut<LastTailPosition>
+    mut last_tail_position: ResMut<LastTailPosition>,
+    mut game_over_writer: EventWriter<GameOverEvent>
 ) {
     if let Some((head_entity, head)) = heads.iter_mut().next() { 
+        let segment_positions = segments
+            .0.iter()
+            .map(|e| *positions.get_mut(*e).unwrap())
+            .collect::<Vec<Position>>();
+
         let mut head_pos = positions.get_mut(head_entity).unwrap();
         match &head.direction {
             Direction::Left => { head_pos.x -= 1; }
@@ -173,12 +183,18 @@ fn snake_movement(
             Direction::Down => { head_pos.y -= 1; }
             Direction::Up => { head_pos.y += 1; }
         };
-        
-        let segment_positions = segments
-            .0.iter()
-            .map(|e| *positions.get_mut(*e).unwrap())
-            .collect::<Vec<Position>>();
 
+        if head_pos.x < 0
+            || head_pos.y < 0
+            || head_pos.x >= ARENA_WIDTH as i32
+            || head_pos.y >= ARENA_HEIGHT as i32 {
+            game_over_writer.send(GameOverEvent);
+        }
+       
+        if segment_positions.contains(&head_pos) {
+            game_over_writer.send(GameOverEvent);
+        }
+ 
         segment_positions
             .iter()
             .zip(segments.0.iter().skip(1))
@@ -289,6 +305,24 @@ fn position_translation(
             convert(pos.y as f32, window.height() as f32, ARENA_HEIGHT as f32),
             0.0
         );
+    }
+}
+
+struct GameOverEvent;
+
+fn game_over(
+    mut commands: Commands,
+    mut reader: EventReader<GameOverEvent>,
+    materials: Res<Materials>,
+    segment_res: ResMut<SnakeTail>,
+    food: Query<Entity, With<Food>>,
+    segments: Query<Entity, With<SnakeTail>>
+) {
+    if reader.iter().next().is_some() {
+        for ent in food.iter().chain(segments.iter()) {
+            commands.entity(ent).despawn();
+        }
+        spawn_snake(commands, materials, segment_res);
     }
 }
 
