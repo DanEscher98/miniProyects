@@ -132,7 +132,7 @@ impl Writer {
                 self.write_byte(b' ');
             },
             _ => {
-                let b = encode(character).unwrap_or(0xfe);
+                let b = encode(character).unwrap_or(0xfe); // a square character
                 self.write_byte(b);
             }
         }
