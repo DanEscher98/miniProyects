@@ -4,10 +4,11 @@
 #![test_runner(first_ross::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+extern crate alloc;
 use core::panic::PanicInfo;
 use first_ross::println;
+use alloc::boxed::Box;
 use bootloader::{BootInfo, entry_point};
-
 
 entry_point!(kernel_main);
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
@@ -108,6 +109,12 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     // let mut frame_allocator = unsafe {
     //     BootInfoFrameAllocator::init(&boot_info.memory_map)
     // };
+
+    // let page: Page = Page::containing_address(VirtAddr::new(0));
+    // let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
+    // unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e) }
+
+    let x = Box::new(41);
 
     #[cfg(test)]
     test_main();

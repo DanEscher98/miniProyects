@@ -1,6 +1,7 @@
 #![no_std]
 #![cfg_attr(test, no_main)]
 #![feature(custom_test_frameworks)]
+#![feature(alloc_error_handler)]
 #![feature(abi_x86_interrupt)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
@@ -11,7 +12,9 @@ pub mod vga_buffer;
 pub mod interrupts;
 pub mod gdt;
 pub mod memory;
+pub mod allocator;
 use vga_buffer::{Green, Red};
+extern crate alloc;
 
 pub fn init() {
     gdt::init();
@@ -71,6 +74,11 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     hlt_loop();
     // The loop is needed because the compiler doesn't know htat the
     // `isa-debug-exit` device causes a program exit.
+}
+
+#[alloc_error_handler]
+fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
+    panic!("allocation error: {:?}", layout)
 }
 
 /// Entry point for `cargo test`
