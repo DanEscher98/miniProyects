@@ -1,22 +1,20 @@
-#![no_std]  // dont' link the Rust stdlib
+#![no_std] // dont' link the Rust stdlib
 #![no_main] // disable all Rust-level entry points
 #![feature(custom_test_frameworks)]
 #![test_runner(first_ross::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 use first_ross::println;
-use bootloader::{BootInfo, entry_point};
-
 
 entry_point!(kernel_main);
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     use x86_64::{structures::paging::Translate, VirtAddr};
-
     println!("Hello {}! ^_^/\n", "Daniel");
     first_ross::init();
     // x86_64::instructions::interrupts::int3();
-    
+
     // fn stack_overflow() {
     //     stack_overflow();
     // }
@@ -24,9 +22,9 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     // unsafe {
     //     *(0xdeadbeef as *mut u64) = 42;
     // };
-    
+
     // panic!("FIX THE SYSTEM");
-    
+
     // PAGE FAULT
     // use first_ross::memory::active_level_4_table;
     // use x86_64::structures::paging::PageTable;
@@ -39,13 +37,13 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     // println!("read from {:?} works! His value: {}\n", ptr_exists, x);
     // unsafe { *ptr_exists = 42; }
     // println!("write to {:?} works!", ptr_exists);
-    
+
     // Check Level Page
     // use x86_64::registers::control::Cr3;
     // let (level_4_page_table, _) = Cr3::read();
     // println!("Level 4 page table at: {:?}",
     //     level_4_page_table.start_address());
-    
+
     // ITER THROUGH PAGE LEVELS
     // let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
     // let l4_table = unsafe { active_level_4_table(phys_mem_offset) };
@@ -67,7 +65,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     //                 // let virt = phys.as_u64() + boot_info.physical_memory_offset;
     //                 // let ptr = VirtAddr::new(virt).as_mut_ptr();
     //                 // let l2_table: &PageTable = unsafe { &*ptr };
-    //                 // 
+    //                 //
     //                 // for (i, entry) in l2_table.iter().enumerate() {
     //                 //     if !entry.is_unused() {
     //                 //         println!("        L2 Entry {}: {:?}", i, entry);
@@ -97,12 +95,12 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     //     let phys = mapper.translate_addr(virt); // in the Traslate trait
     //     println!("{:?} -> {:?}", virt, phys);
     // }
-    
+
     // CHOOSING A VIRTUAL PAGE
     // use first_ross::memory;
     // use first_ross::memory::BootInfoFrameAllocator;
     // use x86_64::structures::paging::Page;
-    // 
+    //
     // let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
     // let mut mapper = unsafe { memory::init(phys_mem_offset) };
     // let mut frame_allocator = unsafe {
