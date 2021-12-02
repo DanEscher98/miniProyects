@@ -4,13 +4,20 @@
 #![test_runner(first_ross::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-use bootloader::{entry_point, BootInfo};
+extern crate alloc;
+use alloc::boxed::Box;
 use core::panic::PanicInfo;
+
+use bootloader::{entry_point, BootInfo};
 use first_ross::println;
 
 entry_point!(kernel_main);
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
-    use x86_64::{structures::paging::Translate, VirtAddr};
+    use first_ross::{
+        allocator,
+        memory::{self, BootInfoFrameAllocator},
+    };
+    use x86_64::VirtAddr;
     println!("Hello {}! ^_^/\n", "Daniel");
     first_ross::init();
     // x86_64::instructions::interrupts::int3();
@@ -106,6 +113,16 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     // let mut frame_allocator = unsafe {
     //     BootInfoFrameAllocator::init(&boot_info.memory_map)
     // };
+
+    // CREATING A KERNEL HEAP
+    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    let mut mapper = unsafe { memory::init(phys_mem_offset) };
+    let mut frame_allocator =
+        unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
+
+    allocator::init_heap(&mut mapper, &mut frame_allocator)
+        .expect("heap initialization failed");
+    let x = Box::new(41);
 
     #[cfg(test)]
     test_main();
