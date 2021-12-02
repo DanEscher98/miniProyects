@@ -2,15 +2,18 @@
 #![cfg_attr(test, no_main)]
 #![feature(custom_test_frameworks)]
 #![feature(abi_x86_interrupt)]
+#![feature(alloc_error_handler)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+extern crate alloc;
 use core::panic::PanicInfo;
+pub mod allocator;
+pub mod gdt;
+pub mod interrupts;
+pub mod memory;
 pub mod serial;
 pub mod vga_buffer;
-pub mod interrupts;
-pub mod gdt;
-pub mod memory;
 use vga_buffer::{Green, Red};
 
 pub fn init() {
@@ -34,7 +37,7 @@ pub fn hlt_loop() -> ! {
 #[repr(u32)]
 pub enum QemuExitCode {
     Success = 0x10,
-    Failed = 0x11
+    Failed  = 0x11,
 }
 
 pub fn exit_qemu(exit_code: QemuExitCode) {
@@ -46,7 +49,10 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
     }
 }
 
-impl<T> Testable for T where T: Fn() {
+impl<T> Testable for T
+where
+    T: Fn(),
+{
     fn run(&self) {
         // `any::type_name` returns a string description of every type
         serial_print!("{}...\t", core::any::type_name::<T>());
@@ -73,9 +79,14 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     // `isa-debug-exit` device causes a program exit.
 }
 
+#[alloc_error_handler]
+fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
+    panic!("allocation error: {:?}", layout)
+}
+
 /// Entry point for `cargo test`
 #[cfg(test)]
-use bootloader::{BootInfo, entry_point};
+use bootloader::{entry_point, BootInfo};
 
 #[cfg(test)]
 entry_point!(test_kernel_main);
