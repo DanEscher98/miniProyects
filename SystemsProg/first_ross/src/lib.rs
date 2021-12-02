@@ -1,6 +1,7 @@
 #![no_std]
 #![cfg_attr(test, no_main)]
 #![feature(custom_test_frameworks)]
+#![feature(const_mut_refs)] // used by the ListAllocator
 #![feature(abi_x86_interrupt)]
 #![feature(alloc_error_handler)]
 #![test_runner(crate::test_runner)]
