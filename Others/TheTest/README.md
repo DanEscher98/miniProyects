@@ -1,8 +1,9 @@
----
+***
+
 title: John Deere Challenges
 author: Daniel Sánchez Domínguez
 date: 28-Oct-2021
----
+-----------------
 
 ## Compilation Instructions
 
@@ -12,13 +13,13 @@ are provided.
 
 The tools that will be installed are:
 
-- The **clang** compiler
-- The **make** tool
-- The newest **python** version
-- Optional: The **Haskell** interpreter, to run the alternative
+*   The **clang** compiler
+*   The **make** tool
+*   The newest **python** version
+*   Optional: The **Haskell** interpreter, to run the alternative
     solutions
-- Optional: **Gnuplot**, to plot the benchmarks graphs
-- Optional: **Pandoc**, to generate an `HTML` of this markup file
+*   Optional: **Gnuplot**, to plot the benchmarks graphs
+*   Optional: **Pandoc**, to generate an `HTML` of this markup file
 
 In a Linux terminal, navigate to the directory where these files are
 located and type the following commands:
@@ -131,7 +132,7 @@ and name.
 ./alternative/search_c.sh -h    # display the help message
 ```
 
----
+***
 
 ## Explanation of each solution
 
@@ -192,7 +193,7 @@ The purpose of the `state` variable is to keep track of the possible
 change in the list. That was needed because in `haskell` all the
 data is immutable and all the functions are point-free.
 
----
+***
 
 ### Sprayer Path Planning
 
@@ -241,7 +242,7 @@ removeClon (x:xs)
     where (state, xs') = ifElemRemove (True, x) xs
 ```
 
----
+***
 
 ### Feature Search in File
 
@@ -297,35 +298,35 @@ Given the conceptual similarly between the first two challenges, it
 was decided to write a common library. Below are brief explanations of
 some of the most important functions.
 
-- `parseInt`: His purpose is handle errors by incorrect user inputs.
+*   `parseInt`: His purpose is handle errors by incorrect user inputs.
     First, the `strtol` tries to convert the input string to a `int`.
     After, the the global variable `errno` is analized to classify
     the possible errors. Only if there are no errors, the integer is
     returned.
-- `deleteThisNode`: Is used by `intersection` to pop the node pointed
+*   `deleteThisNode`: Is used by `intersection` to pop the node pointed
     by `head` if the values match, through the iterations. It granted
     to not incour in a segmentation fault.
-- `prependData`: Even when a working `append` function was possible
+*   `prependData`: Even when a working `append` function was possible
     to program, the `prepend` operation is preferred to not traverse
     all the list with each new element.
 
 ### Shortcomings Summary
 
-- The temporal complexity of challenges 1 and 2 is $O(n^2)$. In a
+*   The temporal complexity of challenges 1 and 2 is $O(n^2)$. In a
     couple of papers, an algorithm was found that reduced the
     complexity to $O(log(n^2))$ using hash tables, however it could
     not be implemented at the moment.
-- The `target/tractors_number.out` when executed with the `sort`
+*   The `target/tractors_number.out` when executed with the `sort`
     option, generates two equal data sets and the intersection
     only includes the first 3 elements.
-- False negatives in the Python implementation of challenge 3.
-- Due to time constraints, the benchmarks test suite could not be
+*   False negatives in the Python implementation of challenge 3.
+*   Due to time constraints, the benchmarks test suite could not be
     successfully completed. An observation from the preliminary tests
     is that the first two programs showed linear growth. The cause is
     unknown at the moment. Perhaps more thorough testing can lead to
     a precise conclusion.
 
----
+***
 
 ## Conclusion
 
@@ -333,4 +334,4 @@ Possibly a more optimal implementation could have been achieved using
 only vectors. Also, more optimizations could have been applied if the
 ordered list guarantee was used. On the other hand, with the actual
 approach, one of the reasons that led to more checks and perhaps less
-optimal functions, was the attempt to avoid segmentation faults. 
+optimal functions, was the attempt to avoid segmentation faults.

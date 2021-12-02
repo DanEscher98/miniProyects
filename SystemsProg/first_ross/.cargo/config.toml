@@ -25,8 +25,8 @@ build-std = ["core", "compiler_builtins", "alloc"]
 run-command = ["qemu-system-x86_64", "-drive",
 	"format=raw,file=target/x86_64-ross/debug/bootimage-first_ross.bin"]
 
-[package.metadata.bootloader.target]
-target = "x86_64-ross.json"
+	[package.metadata.bootloader.target]
+	target = "x86_64-ross.json"
 
-[build]
-target = "x86_64-ross.json"
+	[build]
+	target = "x86_64-ross.json"
