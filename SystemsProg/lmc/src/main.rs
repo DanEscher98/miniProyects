@@ -1,7 +1,8 @@
+extern crate lmc;
+
 use clap::{Arg, App};
 use std::io::{self, BufRead, BufReader};
 use std::fs::File;
-use crate::lmc;
 
 fn main() {
     let matches = App::new("Little Man Computer")
@@ -35,4 +36,6 @@ fn main() {
             break;
         }
     }
+
+    lmc::compute(mailbox);
 }

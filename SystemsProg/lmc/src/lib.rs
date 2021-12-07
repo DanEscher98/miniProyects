@@ -1,6 +1,3 @@
-pub mod compute;
-
-
 /// An instruction in the LMC is represented by a three digits number. The first
 /// digit being the `code`, and the other digits are the index of the mailbox to
 /// apply the instruction. Notice that we cast the index from `i32` to `usize`
