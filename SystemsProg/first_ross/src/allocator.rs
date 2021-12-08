@@ -1,7 +1,7 @@
 use alloc::alloc::{GlobalAlloc, Layout};
 use core::ptr::null_mut;
 
-use linked_list_allocator::LockedHeap;
+use bump::BumpAllocator;
 use x86_64::{
     structures::paging::{
         mapper::MapToError, FrameAllocator, Mapper, Page, PageTableFlags,
@@ -10,6 +10,8 @@ use x86_64::{
     VirtAddr,
 };
 
+pub mod bump;
+pub mod linked_list;
 pub struct DummyAllocator;
 
 unsafe impl GlobalAlloc for DummyAllocator {
@@ -23,7 +25,10 @@ unsafe impl GlobalAlloc for DummyAllocator {
 }
 
 #[global_allocator]
-static ALLOCATOR: LockedHeap = LockedHeap::empty();
+static ALLOCATOR: Locked<BumpAllocator> = Locked::new(BumpAllocator::new());
+
+// use linked_list_allocator::LockedHeap;
+// static ALLOCATOR: LockedHeap = LockedHeap::empty();
 // static ALLOCATOR: DummyAllocator = DummyAllocator;
 
 pub const HEAP_START: usize = 0x_4444_4444_0000;
@@ -55,4 +60,36 @@ pub fn init_heap(
 
     unsafe { ALLOCATOR.lock().init(HEAP_START, HEAP_SIZE) }
     Ok(())
+}
+
+/// A wrapper around spin::Mutex to permit trait implementations
+pub struct Locked<A> {
+    inner: spin::Mutex<A>,
+}
+
+impl<A> Locked<A> {
+    pub const fn new(inner: A) -> Self {
+        Locked {
+            inner: spin::Mutex::new(inner),
+        }
+    }
+
+    pub fn lock(&self) -> spin::MutexGuard<A> {
+        self.inner.lock()
+    }
+}
+
+/// Align the given address `addr` upwards to alignment `align`.
+fn align_up(addr: usize, align: usize) -> usize {
+    // - The `GlobalAlloc` trait guarantees that `align is always a power of
+    // two. This means that `align - 1` has all the lower bits set (e.g. 0b0011)
+    // - The bitwise `NOT` set all the bits expect the lower bits of `align`
+    // - The bitwise `AND` align upwards the bits of address
+    (addr + align - 1) & !(align - 1)
+    //    let remainder = addr % align;
+    //    if remainder == 0 {
+    //        addr // addr already aligned
+    //    } else {
+    //        addr - remainder + align
+    //    }
 }
