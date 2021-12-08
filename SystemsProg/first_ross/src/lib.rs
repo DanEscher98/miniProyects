@@ -1,7 +1,11 @@
 #![no_std]
 #![cfg_attr(test, no_main)]
 #![feature(custom_test_frameworks)]
+<<<<<<< HEAD
 #![feature(alloc_error_handler)]
+=======
+#![feature(const_mut_refs)] // used by the ListAllocator
+>>>>>>> lmc
 #![feature(abi_x86_interrupt)]
 #![feature(alloc_error_handler)]
 #![test_runner(crate::test_runner)]
