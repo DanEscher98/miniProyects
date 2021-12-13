@@ -39,12 +39,12 @@ pub fn init_heap(
     frame_allocator: &mut impl FrameAllocator<Size4KiB>,
 ) -> Result<(), MapToError<Size4KiB>> {
     let page_range = {
-<<<<<<< HEAD
-        let heap_start = VirtAddr::(HEAP_START as u64);
-=======
-        let heap_start = VirtAddr::new(HEAP_START as u64);
->>>>>>> first_ross
-        let heap_end = heap_start + HEAP_SIZE - 1u64;
+        <<<<<<< HEAD
+            let heap_start = VirtAddr::(HEAP_START as u64);
+        =======
+            let heap_start = VirtAddr::new(HEAP_START as u64);
+        >>>>>>> first_ross
+            let heap_end = heap_start + HEAP_SIZE - 1u64;
         let heap_start_page = Page::containing_address(heap_start);
         let heap_end_page = Page::containing_address(heap_end);
         Page::range_inclusive(heap_start_page, heap_end_page)
@@ -86,10 +86,10 @@ fn align_up(addr: usize, align: usize) -> usize {
     // - The bitwise `NOT` set all the bits expect the lower bits of `align`
     // - The bitwise `AND` align upwards the bits of address
     (addr + align - 1) & !(align - 1)
-    //    let remainder = addr % align;
-    //    if remainder == 0 {
-    //        addr // addr already aligned
-    //    } else {
-    //        addr - remainder + align
-    //    }
+        //    let remainder = addr % align;
+        //    if remainder == 0 {
+        //        addr // addr already aligned
+        //    } else {
+        //        addr - remainder + align
+        //    }
 }

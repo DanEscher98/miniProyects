@@ -1,3 +1,4 @@
+#include "lib.h"
 #include <signal.h>
 #include <stdbool.h>
 #include <stdint.h>
