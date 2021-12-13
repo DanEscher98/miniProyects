@@ -49,6 +49,7 @@ uint16_t sign_extend(uint16_t, int);
 // swap
 void update_flags(uint16_t);
 // read image file
+void read_image_file(FILE*);
 // read image
 // check key
 // memory access
@@ -147,8 +148,22 @@ void compute()
 			break;
 		}
 		case OP_AND: { /* bitwise and */
-			break;
-		}
+			// destination register (DR)
+			uint16_t r0 = (instruction >> 9) & 0x7;
+			// first operand (SR1)
+			uint16_t r1 = (instruction >> 6) & 0x7;
+			// whether we are in immediate mode
+			uint16_t imm_flag = (instruction >> 5) & 0x1;
+
+			if (imm_flag) {
+				uint16_t imm5 = sign_extend(instruction & 0x1F, 5);
+				reg[r0] = reg[r1] + imm5;
+			} else {
+				uint16_t r2 = instruction & 0x7;
+				reg[r0] = reg[r1] + reg[r2];
+			}
+			update_flags(r0);
+		} break;
 		case OP_LDR: { /* load register */
 			break;
 		}
