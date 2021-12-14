@@ -62,14 +62,14 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
 impl<T> Testable for T
 where
     T: Fn(),
-{
-    fn run(&self) {
-        // `any::type_name` returns a string description of every type
-        serial_print!("{}...\t", core::any::type_name::<T>());
-        self();
-        serial_println!("{}", Green("[ok]"));
+    {
+        fn run(&self) {
+            // `any::type_name` returns a string description of every type
+            serial_print!("{}...\t", core::any::type_name::<T>());
+            self();
+            serial_println!("{}", Green("[ok]"));
+        }
     }
-}
 
 pub fn test_runner(tests: &[&dyn Testable]) {
     serial_println!("\nRunning {} tests", tests.len());

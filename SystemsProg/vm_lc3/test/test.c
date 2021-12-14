@@ -1,22 +1,11 @@
 #include "../src/lib.h"
-#include <check.h>
+#include <clove.h>
 
-START_TEST(basic) { ck_assert_int_eq(1, 1); }
-END_TEST
-
-int main(void)
+CLOVE_TEST(FirstTest)
 {
-	// CORE SUITE
-	Suite* s1 = suite_create("Core");
-	TCase* tc1_1 = tcase_create("Core");
-	SRunner* sr = srunner_create(s1);
-	suite_add_tcase(s1, tc1_1);
-	tcase_add_test(tc1_1, basic);
-
-	// EPILOGUE
-	srunner_run_all(sr, CK_ENV);
-	int nf = srunner_ntests_failed(sr);
-	srunner_free(sr);
-
-	return nf == 0 ? 0 : 1;
+	int a = 1;
+	int b = 1;
+	CLOVE_INT_EQ(a, b);
 }
+
+CLOVE_RUNNER(FirstTest)
