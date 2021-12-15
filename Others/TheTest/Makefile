@@ -27,8 +27,9 @@ $(SPATH_3).py :
 debug: $(SPATH_1).c $(SPATH_2).c
 	clang $(SPATH_1).c $(FLAGS) -g $(HEADERS) -o $(TPATH_1).out
 	clang $(SPATH_2).c $(FLAGS) -g $(HEADERS) -o $(TPATH_2).out
-	valgrind -s --leak-check=full $(TPATH_1).out
-	valgrind -s --leak-check=full $(TPATH_2).out
+	valgrind --show-error-list=yes --leak-check=full $(TPATH_1).out
+	printf "\n# - # - # - # - # - # - # - # - # - # - # - # - # - #\n\n"
+	valgrind --show-error-list=yes --leak-check=full $(TPATH_2).out
 
 run: $(TPATH_1).out $(TPATH_2).out $(SPATH_3).py
 	./$(TPATH_1).out

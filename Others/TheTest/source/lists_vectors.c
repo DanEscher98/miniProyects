@@ -1,31 +1,32 @@
+#include "lists_vectors.h"
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <string.h>
 #include <time.h>
-#include "lists_vectors.h"
 
 //#####################################
 //## Vector Functions #################
 
-vector initVector(int length, bool zeros, bool sorted) {
+vector initVector(int length, bool zeros, bool sorted)
+{
 	srand((unsigned int)time(NULL));
-	vector new_vector = (vector){ .length = length };
-	new_vector.values = malloc(sizeof(int)*(unsigned int)length);
+	vector new_vector = (vector) { .length = length };
+	new_vector.values = malloc(sizeof(int) * (unsigned int)length);
 	if (zeros) {
-		for (int i=0; i < length; i++) {
+		for (int i = 0; i < length; i++) {
 			new_vector.values[i] = 0;
 		}
 	} else if (sorted) {
 		int value = 0;
-		for (int i=0; i < length; i++) {
-			value += rand()%6;
+		for (int i = 0; i < length; i++) {
+			value += rand() % 6;
 			new_vector.values[i] = value;
 		}
 	} else {
 		int max = length / 2;
-		for (int i=0; i < length; i++) {
-			new_vector.values[i] = rand()%max;
+		for (int i = 0; i < length; i++) {
+			new_vector.values[i] = rand() % max;
 		}
 	}
 	return new_vector;
@@ -38,44 +39,45 @@ vector initVector(int length, bool zeros, bool sorted) {
 
 #define node_size (node*)malloc(sizeof(node))
 
-list initList(void) {
-	list new_list = (list){
-		.length = 0,
-		.head = node_size
-	};
+list initList(void)
+{
+	list new_list = (list) { .length = 0, .head = node_size };
 	new_list.head = NULL;
 	return new_list;
 }
 
-void freeList(list ls) {
-	node *head = ls.head;
+void freeList(list ls)
+{
+	node* head = ls.head;
 	while (head) {
 		head = deleteThisNode(head);
 	}
 	ls.length = 0;
 }
 
-list initRandomList(int length, bool sorted) {
+list initRandomList(int length, bool sorted)
+{
 	srand((unsigned int)time(NULL));
 	list new_ls = initList();
 	if (sorted) {
 		// The sorted list is in reverse order
 		int value = 0;
-		for (int i=0; i < length; i++) {
-			value += rand()%6;
+		for (int i = 0; i < length; i++) {
+			value += rand() % 6;
 			new_ls = prependData(new_ls, value);
 		}
 	} else {
 		int value, max = length / 2;
-		for (int i=0; i < length; i++) {
-			value = rand()%max;
+		for (int i = 0; i < length; i++) {
+			value = rand() % max;
 			new_ls = prependData(new_ls, value);
 		}
 	}
 	return new_ls;
 }
 
-node *getNextNode(node *a) {
+node* getNextNode(node* a)
+{
 	if (a == NULL) {
 		return NULL;
 	} else {
@@ -83,19 +85,22 @@ node *getNextNode(node *a) {
 	}
 }
 
-node *deleteThisNode(node *a) {
+node* deleteThisNode(node* a)
+{
 	if (a == NULL) {
 		return NULL;
 	} else {
-		node *aux = getNextNode(a);
+		node* aux = getNextNode(a);
 		free(a);
 		return aux;
 	}
 }
 
-node *newNode(node *link, int value) {
-	node *new_node = node_size;
-	if (!new_node) return NULL;
+node* newNode(node* link, int value)
+{
+	node* new_node = node_size;
+	if (!new_node)
+		return NULL;
 	new_node->value = value;
 	new_node->next = link;
 	return new_node;
@@ -103,29 +108,31 @@ node *newNode(node *link, int value) {
 
 // Basic operations
 
-int headList(list ls) {
+int headList(list ls)
+{
 	if (ls.head == NULL) {
 		perror("Empty list doesn't have head");
-		exit (1);
+		exit(1);
 	} else {
 		return ls.head->value;
 	}
 }
 
-list prependData(list ls, int value) {
+list prependData(list ls, int value)
+{
 	ls.head = newNode(ls.head, value);
 	ls.length++;
 	return ls;
 }
 
-list appendData(list ls, int value) {
-	node *new_node = newNode(NULL, value);
+list appendData(list ls, int value)
+{
+	node* new_node = newNode(NULL, value);
 	// A initialized structure is returned
-	if (!ls.head) return (list){ 
-		.length = 1, 
-		.head = new_node
-	}; else {
-		node *head = ls.head;
+	if (!ls.head)
+		return (list) { .length = 1, .head = new_node };
+	else {
+		node* head = ls.head;
 		while (head->next) {
 			head = getNextNode(head);
 		}
@@ -135,8 +142,9 @@ list appendData(list ls, int value) {
 	}
 }
 
-int numberOfOccurrences(list ls, int value) {
-	node *head = ls.head;
+int numberOfOccurrences(list ls, int value)
+{
+	node* head = ls.head;
 	int count = 0;
 	while (head != NULL) {
 		if (value == head->value) {
@@ -147,8 +155,9 @@ int numberOfOccurrences(list ls, int value) {
 	return count;
 }
 
-list deleteClones(list ls) {
-	node *head = ls.head;
+list deleteClones(list ls)
+{
+	node* head = ls.head;
 	int value;
 	list new_ls = initList();
 	while (head != NULL) {
@@ -161,19 +170,20 @@ list deleteClones(list ls) {
 	return new_ls;
 }
 
-list intersection(vector vec_x, list ly) {
+list intersection(vector vec_x, list ly)
+{
 	list new_ls = initList();
 	node *head, *initial = ly.head;
 	int vec_val, ls_val;
 	bool mainHead;
-	for (int i=0; i < vec_x.length; i++) {
+	for (int i = 0; i < vec_x.length; i++) {
 		head = initial;
 		mainHead = true;
 		vec_val = vec_x.values[i];
 		while (head != NULL) {
 			ls_val = head->value;
 			if (vec_val == ls_val) {
-				//printf("Vector: %d List: %d\n", vec_val, ls_val);
+				// printf("Vector: %d List: %d\n", vec_val, ls_val);
 				new_ls = prependData(new_ls, vec_val);
 				head = deleteThisNode(head);
 				if (mainHead) {
@@ -191,46 +201,51 @@ list intersection(vector vec_x, list ly) {
 //#####################################
 //## Convert and Validation Functions #
 
-void printVector(vector vec) {
+void printVector(vector vec)
+{
 	printf("[ ");
-	for (int i=0, count=1; i < vec.length; i++, count++) {
+	for (int i = 0, count = 1; i < vec.length; i++, count++) {
 		printf("%3d", vec.values[i]);
 		if (count > 10) {
 			count = 0;
 			printf("\n");
 		}
-		if (i + 1 < vec.length) printf(", ");
+		if (i + 1 < vec.length)
+			printf(", ");
 	}
 	printf("]\n");
-
 }
 
-void printList(list ls) {
-	node *head = ls.head;
+void printList(list ls)
+{
+	node* head = ls.head;
 	printf(" ( ");
-	for (int count=1; head != NULL; count++) {
+	for (int count = 1; head != NULL; count++) {
 		printf("%4d", head->value);
 		head = getNextNode(head);
 		if (count > 10) {
 			count = 0;
 			printf("\n");
 		}
-		if (head != NULL) printf(" → ");
+		if (head != NULL)
+			printf(" → ");
 	}
 	printf(" )\n");
 }
 
-void horizontalLine() {
+void horizontalLine()
+{
 	printf("\n#");
-	for (int i=0; i < 75; i++) {
+	for (int i = 0; i < 75; i++) {
 		putc('-', stdout);
 	}
 	printf("#\n");
 }
 
-int parseInt(char *value) {
+int parseInt(char* value)
+{
 	int num;
-	char *endptr;		// reset error number
+	char* endptr; // reset error number
 	errno = 0;
 	// The problems set maxium size at 1000, so the max
 	// length of a number is set to 4 digits
@@ -240,9 +255,10 @@ int parseInt(char *value) {
 		exit(1);
 	} else if (endptr == value) {
 		fputs("ERR => The arg must be an int\n", stdout);
-		exit(1);	// no character readed
+		exit(1); // no character readed
 	} else if (*endptr && *endptr != '\n') {
 		fputs("ERR => Incorrect char\n", stdout);
 		exit(1);
-	} else return num;
+	} else
+		return num;
 }
