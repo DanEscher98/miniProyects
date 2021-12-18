@@ -11,6 +11,7 @@ use core::panic::PanicInfo;
 use first_ross::println;
 use alloc::boxed::Box;
 use bootloader::{BootInfo, entry_point};
+use core::arch::asm
 
 =======
 use alloc::{boxed::Box, rc::Rc, vec, vec::Vec};
@@ -123,15 +124,15 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     //     BootInfoFrameAllocator::init(&boot_info.memory_map)
     // };
 
-<<<<<<< HEAD
-    // let page: Page = Page::containing_address(VirtAddr::new(0));
-    // let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
-    // unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e) }
+    <<<<<<< HEAD
+        // let page: Page = Page::containing_address(VirtAddr::new(0));
+        // let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
+        // unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e) }
 
-    let x = Box::new(41);
-=======
-    // CREATING A KERNEL HEAP
-    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+        let x = Box::new(41);
+    =======
+        // CREATING A KERNEL HEAP
+        let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
     let mut mapper = unsafe { memory::init(phys_mem_offset) };
     let mut frame_allocator =
         unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
@@ -162,10 +163,10 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
         "reference count is {} now",
         Rc::strong_count(&cloned_reference)
     );
->>>>>>> first_ross
+    >>>>>>> first_ross
 
-    #[cfg(test)]
-    test_main();
+        #[cfg(test)]
+        test_main();
 
     println!("It did not crash!\n");
     first_ross::hlt_loop();
