@@ -41,5 +41,6 @@
 - `[·]`)
 
 ## Hardware
+
 - `[·]`) (raspi3-tutorial in C)[https://github.com/bztsrc/raspi3-tutorial]
 - `[·]`) (PineTime Watch Face in Rust)[https://lupyuen.github.io/pinetime-rust-mynewt/articles/watchface]
