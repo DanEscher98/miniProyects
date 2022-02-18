@@ -1,13 +1,13 @@
 #![allow(dead_code)]
-use volatile::Volatile;
 use core::fmt;
 use lazy_static::lazy_static;
 use spin::Mutex;
+use volatile::Volatile;
 
 /* The VGA text buffer is a special memory area mapped to the VGA
-     * hardware that contains the contents displayed on screen. It
-     * normally consists of 25 lines that each contain 80 character 
-     * cells. The buffer is located at address 0xb8000. */
+ * hardware that contains the contents displayed on screen. It
+ * normally consists of 25 lines that each contain 80 character
+ * cells. The buffer is located at address 0xb8000. */
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -66,16 +66,16 @@ impl fmt::Display for Red {
 // This guarantess the correct field ordering like in a C struct
 struct ScreenChar {
     ascii_character: u8,
-    color_code: ColorCode
+    color_code: ColorCode,
 }
 
 const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
 
-#[repr(transparent)]    
+#[repr(transparent)]
 // Ensure that it has the same emory layout as its single filed
 struct Buffer {
-    chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT]
+    chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
 }
 
 lazy_static! {
@@ -97,7 +97,7 @@ pub struct Writer {
     color_code: ColorCode,
     // Explicit lifetime, specifies that the reference is valid for
     // the whole program run time (true for the VGA text buffer)
-    buffer: &'static mut Buffer 
+    buffer: &'static mut Buffer,
 }
 
 impl Writer {
@@ -118,7 +118,7 @@ impl Writer {
                 // away this write.
                 self.buffer.chars[row][col].write(ScreenChar {
                     ascii_character: byte,
-                    color_code
+                    color_code,
                 });
                 self.column_position += 1;
             }
@@ -128,9 +128,11 @@ impl Writer {
     pub fn write_char(&mut self, character: char) {
         match character {
             '\n' => self.new_line(),
-            '\t' => while self.column_position % 8 != 0 {
-                self.write_byte(b' ');
-            },
+            '\t' => {
+                while self.column_position % 8 != 0 {
+                    self.write_byte(b' ');
+                }
+            }
             _ => {
                 let b = encode(character).unwrap_or(0xfe); // a square character
                 self.write_byte(b);
@@ -166,7 +168,7 @@ impl Writer {
     fn clear_row(&mut self, row: usize) {
         let blank = ScreenChar {
             ascii_character: b' ',
-            color_code: self.color_code
+            color_code: self.color_code,
         };
         for col in 0..BUFFER_WIDTH {
             self.buffer.chars[row][col].write(blank)
@@ -224,10 +226,7 @@ fn test_println_output() {
         let mut writer = WRITER.lock();
         writeln!(writer, "\n{}", s).expect("writeln failed");
         for (i, c) in s.chars().enumerate() {
-            let screen_char = writer
-                .buffer
-                .chars[BUFFER_HEIGHT - 2][i]
-                .read();
+            let screen_char = writer.buffer.chars[BUFFER_HEIGHT - 2][i].read();
             assert_eq!(char::from(screen_char.ascii_character), c);
         }
     })
@@ -331,14 +330,14 @@ pub fn encode(c: char) -> Option<u8> {
         '╢' => 0xb6,
         '╖' => 0xb7,
         '╕' => 0xb8,
-        '╣' => 0xb9, 
+        '╣' => 0xb9,
         '║' => 0xba,
         '╗' => 0xbb,
         '╝' => 0xbc,
         '╜' => 0xbd,
         '╛' => 0xbe,
         '┐' => 0xbf,
-        
+
         '└' => 0xc0,
         '┴' => 0xc1,
         '┬' => 0xc2,
