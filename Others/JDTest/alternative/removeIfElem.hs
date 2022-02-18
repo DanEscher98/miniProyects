@@ -1,5 +1,7 @@
 module JohnDeereChallenges where
 
+import           Control.Monad.State
+
 intersection :: (Eq a) => [a] -> [a] -> [a]
 intersection _ [] = []
 intersection [] _ = []
@@ -13,10 +15,21 @@ removeClon []     = []
 removeClon (x:xs)
     | state     = removeClon xs'
     | otherwise = x : removeClon xs'
-    where (state, xs') = ifElemRemove (True, x) xs
+    where (xs', state) = ifElemRemove' True x xs
 
 -----------------------------------------------------------
 -- Auxiliar Functions -------------------------------------
+ifElemRemove' :: (Eq a) => Bool -> a -> [a] -> ([a], Bool)
+ifElemRemove' all e xs = runState (loop e xs) False where
+    loop _ [] = return []
+    loop e (x:xs) = do
+        xs' <- loop e xs
+        if e /= x then return (x:xs')
+                  else do
+                      put True
+                      if all then loop e xs
+                             else return xs
+
 ifElemRemove :: (Eq a) => (Bool, a) -> [a] -> (Bool, [a])
 ifElemRemove (c, e) = auxLoop (False, e) where
     auxLoop (state, _) [] = (state, [])
