@@ -1,4 +1,6 @@
-# Haskell Problems
+---
+title: Haskell Problems
+---
 
 ## Parse Pseudo-Assembly
 You are a TA at a university, and you want to evaluate your student's
@@ -10,23 +12,23 @@ The bytecode language you need to support includes basic arithmetic
 and variables. The bytecode language is stack, rather than register
 based. ByteCode (right) is given for the following pseudo code (left):
 
-```
+```javascript
 function f() {
 
-    x = 1                   LOAD_VAL 1
-                            WRITE_VAR 'x'
+    x = 1                // LOAD_VAL 1
+                         // WRITE_VAR 'x'
 
-    y = 2                   LOAD_VAL 2
-                            WRITE_VAR 'y'
+    y = 2                // LOAD_VAL 2
+                         // WRITE_VAR 'y'
 
-    return (x + 1) * y      READ_VAR 'x'
-                            LOAD_VAL 1
-                            ADD
+    return (x + 1) * y   // READ_VAR 'x'
+                         // LOAD_VAL 1
+                         // ADD
 
-                            READ_VAR 'y'
-                            MULTIPLY
+                         // READ_VAR 'y'
+                         // MULTIPLY
 
-                            RETURN_VALUE
+                         // RETURN_VALUE
 }
 ```
 
