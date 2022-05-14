@@ -1,0 +1,12 @@
+[package]
+name = "catr"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "3.1.18", features = ["derive"] }
+
+[dev-dependencies]
+rand = "0.8.5"				# Random number generators and other randomness functionality.
+assert_cmd = "2.0.4"		# Test CLI Applications.
+predicates = "2.1.1"		# An implementation of boolean-valued predicate functions.
