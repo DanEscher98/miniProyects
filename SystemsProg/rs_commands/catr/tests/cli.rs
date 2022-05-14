@@ -7,6 +7,10 @@ use std::fs;
 type TestResult = Result<(), Box<dyn Error>>;
 
 const PRG: &str = "catr";
+const EMPTY: &str = "tests/inputs/empty.txt";
+const FOX: &str = "tests/inputs/fox.txt";
+const SPIDERS: &str = "tests/inputs/spiders.txt";
+const BUSTLE: &str = "tests/inputs/bustle.txt";
 
 fn get_randfilename() -> String {
     loop {
@@ -27,6 +31,16 @@ fn run_stdin(input_file: &str, args: &[&str], expected_file: &str) -> TestResult
     Command::cargo_bin(PRG)?
         .args(args)
         .write_stdin(input)
+        .assert()
+        .success()
+        .stdout(expected);
+    Ok(())
+}
+
+fn run_normal(args: &[&str], expected_file: &str) -> TestResult {
+    let expected = fs::read_to_string(expected_file)?;
+    Command::cargo_bin(PRG)?
+        .args(args)
         .assert()
         .success()
         .stdout(expected);
@@ -54,4 +68,27 @@ fn skips_bad_file() -> TestResult {
         .success()
         .stderr(predicate::str::is_match(expected)?);
     Ok(())
+}
+
+#[test]
+fn bustle_stdin_n() -> TestResult {
+    run_stdin(BUSTLE, &["-n", "-"], "tests/expected/bustle.n.txt")
+}
+
+#[test]
+fn empty() -> TestResult {
+    run_normal(&[EMPTY], "tests/expected/empty.txt")
+}
+
+#[test]
+fn fox() -> TestResult {
+    run_normal(&[FOX], "tests/expected/fox.txt")
+}
+
+#[test]
+fn spiders_b() -> TestResult {
+    run_normal(
+        &["--number-nonblank", SPIDERS],
+        "tests/expected/spiders.b.txt",
+    )
 }
