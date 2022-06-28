@@ -38,6 +38,7 @@ share/python-wheels/
 MANIFEST
 
 target/
+tags
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
