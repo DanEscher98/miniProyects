@@ -1,5 +1,7 @@
 import collections
+import dis
 import inspect
+import sys
 import types
 
 import six
@@ -49,10 +51,10 @@ class VirtualMachine:
     program is run. The entry point is the method `run_code`"""
 
     def __init__(self):
-        self.frames = []  # The call stack of frames
-        self.frame = None  # The current frame
+        self.frames: list[Frame] = []  # The call stack of frames
+        self.frame: Frame = None  # The current frame
         self.return_value = None
-        self.last_exception = None
+        self.last_exception: Exception = None
 
     def run_code(self, code, global_names=None, local_names=None):
         """An entry point to execute code using the VM"""
@@ -66,6 +68,79 @@ class VirtualMachine:
 
     def run_frame(self, frame):
         pass
+
+    # Data stack manipulation
+    def top(self):
+        return self.frame.stack[-1]
+
+    def pop(self):
+        return self.frame.stack.pop()
+
+    def push(self, *vals):
+        self.frame.stack.extend(vals)
+
+    def popn(self, n):
+        """Pop a number of values from the value stack.
+        A list of `n` values is returned the deepest value
+        first"""
+        if n is not 0:
+            ret = self.frame.stack[-n:]
+            self.frame.stack[-n:] = []
+            return ret
+        return []
+
+    def parse_byte_and_args(self):
+        """The meaning of the argument to each instruction
+        depends on which instruction it is"""
+        frame = self.frame
+        op_offset = frame.last_instruction
+        byte_code = frame.code_obj.co_code[op_offset]
+        frame.last_instruction += 1
+        byte_name = dis.opname[byte_code]
+        if byte_code >= dis.HAVE_ARGUMENT:
+            # index into the bytecode
+            arg = frame.code_obj.co_code[
+                frame.last_instruction : frame.last_instruction + 2
+            ]
+            frame.last_instruction += 2  # advance the instruction pointer
+            arg_val = arg[0] + (arg[1] * 256)
+            if byte_code in dis.hasconst:  # look up a constant
+                arg = frame.code_obj.co_consts[arg_val]
+            elif byte_code in dis.hasname:  # look up a name
+                arg = frame.code_obj.co_name[arg_val]
+            elif byte_code in dis.haslocal:  # look up a local name
+                arg = frame.code_obj.co_varnames[arg_val]
+            elif byte_code in dis.hasjrel:  # calculate a relative jump
+                arg = frame.last_instruction + arg_val
+            else:
+                arg = arg_val
+            argument = [arg]
+        else:
+            argument = []
+        return byte_name, argument
+
+    def dispatch(self, byte_name, argument):
+        """Dispatch by bytename to the corresponding
+        methods. Exceptions are caught and set on the
+        virtual machine."""
+        why = None
+        try:
+            bytecode_fn = getattr(self, f"byte_{byte_name}", None)
+            if bytecode_fn is None:
+                if byte_name.startwith("UNARY_"):
+                    self.unary_operator(byte_name[6:])
+                elif byte_name.startwith("BINARY_"):
+                    self.binary_operator(byte_name[6:])
+                else:
+                    raise VirtualMachineError(f"unsupported bytecode type: {byte_name}")
+            else:
+                why = bytecode_fn(*argument)
+        except Exception as err:
+            # deal with exceptions encountered while
+            # executing the op
+            self.last_exception = sys.exc_info()[:2] + (None,)
+            why = "exception"
+        return why
 
 
 class Frame:
