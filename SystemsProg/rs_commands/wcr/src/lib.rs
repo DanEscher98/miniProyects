@@ -6,8 +6,10 @@ use std::io::{self, BufRead, BufReader, Read};
 #[derive(Debug)]
 pub struct Config {
     files: Vec<String>,
-    lines: usize,
-    bytes: Option<usize>,
+    lines: bool,
+    words: bool,
+    bytes: bool,
+    chars: bool,
 }
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
@@ -16,7 +18,7 @@ pub fn get_args() -> MyResult<Config> {
     let matches = Command::new("wcr")
         .version("0.1.0")
         .author("Danyiel Colin <danyiel5978@gmail.com>")
-        .about("Rusty Head")
+        .about("Rusty Word Counter")
         .arg(
             Arg::new("files")
                 .allow_invalid_utf8(true)
@@ -27,39 +29,54 @@ pub fn get_args() -> MyResult<Config> {
         )
         .arg(
             Arg::new("lines")
-                .short('n')
+                .short('l')
                 .long("lines")
-                .value_name("LINES")
-                .help("Set the desired number lines")
+                .help("print the newline counts")
                 .conflicts_with("bytes")
-                .default_value("10"),
+                .takes_value(false),
+        )
+        .arg(
+            Arg::new("words")
+                .short('w')
+                .long("words")
+                .help("print the words count")
+                .takes_value(false),
         )
         .arg(
             Arg::new("bytes")
                 .short('c')
                 .long("bytes")
-                .value_name("BYTES")
-                .takes_value(true)
-                .help("Set the desired bytes number"),
+                .help("print the bytes count")
+                .takes_value(false),
+        )
+        .arg(
+            Arg::new("chars")
+                .short('m')
+                .long("chars")
+                .help("print the characters count")
+                .takes_value(false)
+                .conflicts_with("bytes"),
         )
         .get_matches();
 
-    let lines = matches
-        .value_of("lines")
-        .map(parse_positive_int)
-        .transpose()
-        .map_err(|e| format!("illegal line count: {}", e))?;
+    let mut lines = matches.is_present("lines");
+    let mut words = matches.is_present("words");
+    let mut bytes = matches.is_present("bytes");
+    let mut chars = matches.is_present("chars");
 
-    let bytes = matches
-        .value_of("bytes")
-        .map(parse_positive_int)
-        .transpose()
-        .map_err(|e| format!("illegal line count: {}", e))?;
+    if [lines, words, bytes, chars].iter().all(|v| v == &false) {
+        lines = true;
+        words = true;
+        bytes = true;
+        chars = false;
+    }
 
     Ok(Config {
         files: matches.values_of_lossy("files").unwrap(),
-        lines: lines.unwrap(),
+        lines,
+        words,
         bytes,
+        chars,
     })
 }
 

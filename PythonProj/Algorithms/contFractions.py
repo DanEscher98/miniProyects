@@ -1,7 +1,7 @@
-import numpy as np
-from sympy import *
-from arrayFunk import *
 import matplotlib.pyplot as plt
+import numpy as np
+from arrayFunk import *
+from sympy import *
 
 
 class contFraction:
@@ -81,6 +81,7 @@ class asocPol:
         val = []
         for k in range(0, len(ans.list)):
             val.append((k, ans.aprox[k]))
+        return val
 
     def _pq(self, p, q):
         x = symbols("x")

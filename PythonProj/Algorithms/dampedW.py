@@ -1,10 +1,12 @@
 # Daniel Sanchez Dominguez
 
+import math
+from fractions import Fraction
+from os import name, system
+
 import matplotlib.pyplot as plt
 import numpy as np
-from fractions import Fraction
-from os import system, name
-import math
+
 
 # Codigo relevante para los calculos
 def draw_graph(x, y, name):
@@ -47,7 +49,7 @@ def calc_tab(A, m, k, b, q):
 def ec_MAS(t, A, m, k, b, q):
     tm = t / (2 * m)
     eb = math.exp(b * tm)
-    y = (A / eb) * math.cos(tm * math.sqrt(4 * m * k - b ** 2))
+    y = (A / eb) * math.cos(tm * math.sqrt(4 * m * k - b**2))
     return y
 
 
@@ -57,9 +59,6 @@ def clear():
         system("cls")
     else:
         system("clear")
-
-
-df
 
 
 def menu():
