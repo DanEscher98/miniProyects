@@ -1,0 +1,8 @@
+python.org
+pypi.org
+docs.python.org
+peps.python.org
+non-existing-url.com
+google.com
+this-site-israndom.com
+fedoraproject.com
