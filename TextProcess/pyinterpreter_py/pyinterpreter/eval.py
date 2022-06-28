@@ -1,3 +1,12 @@
+import collections
+import inspect
+import types
+
+import six
+
+PY3, PY2 = six.PY3, not six.PY3
+
+
 class Interpreter:
     def __init__(self):
         self.stack = []
@@ -85,3 +94,63 @@ class Frame:
         )
         self.last_instruction = 0
         self.block_stack = []
+
+
+class Function:
+    """Create a realistic function object, defining the
+    things the interpreter expects"""
+
+    # pylint: disable=too-many-arguments
+
+    __slots__ = [
+        "func_code",
+        "func_name",
+        "func_defaults",
+        "func_globals",
+        "func_locals",
+        "func_dict",
+        "func_closure",
+        "__name__",
+        "__dict__",
+        "__doc__",
+        "_vm",
+        "_func",
+    ]
+
+    def __init__(self, name, code, globs, defaults, closure, vm):
+        self._vm = vm
+        self.func_code = code
+        self.func_name = self.__name__ = name or code.co_name
+        self.func_defaults = tuple(defaults)
+        self.func_globals = globs
+        self.func_locals = self._vm.frame.f_locals
+        self.__dict__ = {}
+        self.func_closures = closure
+        self.__doc__ = code.co_consts[0] if code.co_consts else None
+
+        # Sometimes, we need a real Python function. This is
+        # for that
+        kw = {"argdefs": self.func_defaults}
+        if closure:
+            kw["closure"] = tuple(make_cell(0) for _ in closure)
+        self._func = types.FunctionType(code, globs, **kw)
+
+    def __call__(self, *args, **kwargs):
+        """When calling a Function, make a new frame and run it"""
+        # callargs = inspect.getcallargs(self._func, *args, **kwargs)
+        callargs = dict(inspect.signature(self._func).bind(*args, **kwargs).arguments)
+        # Use callargs to provide a mapping of arguments:
+        # values to pass into the new frame
+        frame = self._vm.make_frame(self.func_code, callargs, self.func_globals, {})
+        return self._vm.run_frame(frame)
+
+
+def make_cell(value):
+    """Create a real Python closure and grab a cell"""
+    # pylint: disable=unnecessary-direct-lambda-call
+    # pylint: disable=no-member
+    # pylint: disable=unsubscriptable-object
+    func = (lambda x: lambda: x)(value)
+    if not PY3:
+        return func.func_closure[0]
+    return func.__closure__[0]
