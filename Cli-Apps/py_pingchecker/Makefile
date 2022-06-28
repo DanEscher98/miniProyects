@@ -10,5 +10,8 @@ compile: $(NAME)/__main__.py
 run: $(NAME)/__main__.py
 	@python -m $(NAME) $(FLAGS)
 
+types: $(wildcard $(NAME)/*.py)
+	@merge-pyi -i $< .pytype/pyi/$(NAME)/$(shell basename $< .py).pyi
+
 clean:
 	rm -rdf build dist $(NAME)/__pycache__/ $(NAME).spec
