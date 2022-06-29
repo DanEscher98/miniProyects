@@ -3,6 +3,7 @@ import dis
 import inspect
 import sys
 import types
+from typing import Any, Tuple
 
 import six
 
@@ -52,9 +53,9 @@ class VirtualMachine:
 
     def __init__(self):
         self.frames: list[Frame] = []  # The call stack of frames
-        self.frame: Frame = None  # The current frame
-        self.return_value = None
-        self.last_exception: Exception = None
+        self.frame: Frame = Any  # The current frame
+        self.return_value = Any
+        self.last_exception: Tuple[Any, Any, Any] = Any
 
     def run_code(self, code, global_names=None, local_names=None):
         """An entry point to execute code using the VM"""
@@ -63,13 +64,61 @@ class VirtualMachine:
         )
         self.run_frame(frame)
 
-    def make_frame(self, code, global_names, local_names):
-        pass
+    # FRAME MANIPULATION
+    def make_frame(self, code, callargs={}, global_names=None, local_names=None):
+        if global_names is not None and local_names is not None:
+            local_names = global_names
+        elif self.frames:
+            global_names = self.frame.global_names
+            local_names = {}
+        else:
+            global_names = local_names = {
+                "__builtins__": __builtins__,
+                "__name__": "__main__",
+                "__doc__": None,
+                "__package__": None,
+            }
+
+        local_names.update(callargs)
+        frame = Frame(code, global_names, local_names, self.frame)
+        return frame
+
+    def push_frame(self, frame):
+        self.frames.append(frame)
+        self.frame = frame
+
+    def pop_frame(self):
+        self.frames.pop()
+        if self.frames:
+            self.frame = self.frames[-1]
+        else:
+            self.frame = None
 
     def run_frame(self, frame):
-        pass
+        """Run a frame until it returns (somehow).
+        Exceptions are raised, the return value is returned"""
+        self.push_frame(frame)
+        while True:
+            byte_name, arguments = self.parse_byte_and_args()
 
-    # Data stack manipulation
+            why = self.dispatch(byte_name, arguments)
+
+            # Deal with any block management we need to do
+            while why and frame.block_stack:
+                why = self.manage_block_stack(why)
+
+            if why:
+                break
+        self.pop_frame()
+
+        if why == "exception":
+            exc, val, tb = self.last_exception
+            err = exc(val)
+            err.__traceback__ = tb
+            raise err
+        return self.return_value
+
+    # DATA STACK MANIPULATION
     def top(self):
         return self.frame.stack[-1]
 
@@ -141,6 +190,8 @@ class VirtualMachine:
             self.last_exception = sys.exc_info()[:2] + (None,)
             why = "exception"
         return why
+
+    # BLOCK STACK MANIPULATION
 
 
 class Frame:
