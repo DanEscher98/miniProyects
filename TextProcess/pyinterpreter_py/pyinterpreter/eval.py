@@ -43,6 +43,9 @@ class Interpreter:
                     self.PRINT_ANSWER()
 
 
+Block = collections.namedtuple("Block", "type, handler, stack_height")
+
+
 class VirtualMachineError(Exception):
     pass
 
@@ -192,6 +195,43 @@ class VirtualMachine:
         return why
 
     # BLOCK STACK MANIPULATION
+    def push_block(self, b_type, handler=None):
+        stack_height = len(self.frame.stack)
+        self.frame.block_stack.append(Block(b_type, handler, stack_height))
+
+    def pop_block(self):
+        return self.frame.block_stack.pop()
+
+    def unwind_block(self, block):
+        """Unwind the values on the data stack corresponding
+        to a given block"""
+        if block.type == "except-handler":
+            offset = 3
+        else:
+            offset = 0
+
+        while len(self.frame.stack) > block.level + offset:
+            self.pop()
+
+        if block.type == "except-handler":
+            traceback, value, exctype = self.popn(3)
+            self.last_exception = exctype, value, traceback
+
+        def manage_block_stack(self, why):
+            frame = self.frame
+            block = frame.block_stack[-1]
+            if block.type == "loop" and why == "continue":
+                self.jump(self.return_value)
+                why = None
+                return why
+
+            self.pop_block()
+            self.unwind_block(block)
+
+            if block.type == "loop" and why == "break":
+                why = None
+                self.jump(block.handler)
+                return why
 
 
 class Frame:

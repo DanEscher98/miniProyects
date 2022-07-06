@@ -13,6 +13,8 @@ intermediate representation between `C` and a piece of hardware).
 Python handles loops and conditionals with `GOTO` statements in the
 _bytecode_.
 
+`TOS`: Top of Stack
+
 ## Meaning of columns in bytecode
 1. The line number, for the first instruction of each line
 2. The current instruction, indicated as `-->`
