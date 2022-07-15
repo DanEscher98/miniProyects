@@ -1,0 +1,50 @@
+"""cntlang main functionality"""
+
+import os
+import sys
+from pathlib import Path
+from typing import Dict, Iterator, Tuple, TypeVar, Union
+
+from cntlang import ext2name, igndir, ignfile
+
+StrPath = TypeVar("StrPath", str, Path)
+
+
+def _count_lines(filename: StrPath) -> Union[None, int]:
+    lines = None
+    with open(filename, "r", encoding="utf-8") as file:
+        try:
+            lines = sum(1 for _ in file)
+        except UnicodeDecodeError:
+            sys.stderr.write(f"Can't read: {filename}\n")
+    return lines
+
+
+def _recurse_files(pwdir: StrPath) -> Iterator[Tuple[str, str]]:
+    """Recurse through the directory and yield only the
+    files that are not in a config directory."""
+    for subdir, _, files in os.walk(pwdir, followlinks=False):
+        split_path_set = set(os.path.normpath(subdir).split(os.sep))
+        if split_path_set.intersection(igndir):
+            continue
+        for file in files:
+            if os.path.splitext(file)[0] in ignfile:
+                continue
+            ext = os.path.splitext(file)[1].lstrip(".")
+            if lang := ext2name.get(ext):
+                filename = os.path.join(subdir, file)
+                yield (lang, filename)
+
+
+def classify_files(pwdir: StrPath) -> Dict[str, Tuple]:
+    file_data = {}
+    for extype, file in _recurse_files(pwdir):
+        if not (ln := _count_lines(file)):
+            continue
+        sz = os.path.getsize(file)
+        if extype in file_data:
+            (lines, files, size) = file_data[extype]
+            file_data[extype] = (lines + ln, files + 1, size + sz)
+        else:
+            file_data[extype] = (ln, 1, sz)
+    return file_data

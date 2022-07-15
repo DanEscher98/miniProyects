@@ -49,6 +49,7 @@ Block = collections.namedtuple("Block", "type, handler, stack_height")
 class VirtualMachineError(Exception):
     pass
 
+Block = collections.namedtuple("Block", "type, handler, stack_height")
 
 class VirtualMachine:
     """Only one instance will be created each time the
@@ -197,6 +198,7 @@ class VirtualMachine:
     # BLOCK STACK MANIPULATION
     def push_block(self, b_type, handler=None):
         stack_height = len(self.frame.stack)
+<<<<<<< HEAD
         self.frame.block_stack.append(Block(b_type, handler, stack_height))
 
     def pop_block(self):
