@@ -3,7 +3,7 @@
 import os
 import sys
 from pathlib import Path
-from typing import Dict, Iterator, Tuple, TypeVar, Union
+from typing import AsyncGenerator, Dict, Iterator, Tuple, TypeVar, Union
 
 from cntlang import ext2name, igndir, ignfile
 
@@ -20,7 +20,7 @@ def _count_lines(filename: StrPath) -> Union[None, int]:
     return lines
 
 
-def _recurse_files(pwdir: StrPath) -> Iterator[Tuple[str, str]]:
+async def _recurse_files(pwdir: StrPath) -> AsyncGenerator[Tuple[str, str]]:
     """Recurse through the directory and yield only the
     files that are not in a config directory."""
     for subdir, _, files in os.walk(pwdir, followlinks=False):
@@ -36,18 +36,12 @@ def _recurse_files(pwdir: StrPath) -> Iterator[Tuple[str, str]]:
                 yield (lang, filename)
 
 
-def _file_profiles(pwdir: StrPath) -> Iterator:
+async def classify_files(pwdir: StrPath) -> Dict[str, Tuple]:
+    file_data = {}
     for extype, file in _recurse_files(pwdir):
         if not (ln := _count_lines(file)):
             continue
         sz = os.path.getsize(file)
-
-        yield (extype, ln, sz)
-
-
-def classify_files(pwdir: StrPath) -> Dict[str, Tuple]:
-    file_data = {}
-    for extype, ln, sz in _file_profiles(pwdir):
         if extype in file_data:
             (lines, files, size) = file_data[extype]
             file_data[extype] = (lines + ln, files + 1, size + sz)
