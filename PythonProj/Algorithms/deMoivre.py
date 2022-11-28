@@ -4,7 +4,6 @@
 from os import system, name
 from arrayFunk import frange
 import matplotlib.pyplot as plt
-import decimal
 import numpy as np
 import math
 
@@ -21,7 +20,9 @@ def graph(a, b, z, n):
     handles, labels = ax.get_legend_handles_labels()
     lgd = ax.legend(handles, labels, loc="upper left", bbox_to_anchor=(1, 1))
     plt.savefig(
-        "Output/" + name + ".png", bbox_extra_artists=(lgd,), bbox_inches="tight"
+        "Output/" + name + ".png",
+        bbox_extra_artists=(lgd,),
+        bbox_inches="tight"
     )
     plt.show()
 
