@@ -2,8 +2,8 @@ import asyncio
 import pathlib
 import sys
 
-from py_checker.checker import site_is_online, site_is_online_async
-from py_checker.cli import display_check_result, get_args
+from pingchecker.checker import site_is_online, site_is_online_async
+from pingchecker.cli import display_check_result, get_args
 
 
 def main():

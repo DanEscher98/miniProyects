@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "pingchecker"
+version = "0.1.0"
+description = ""
+authors = ["Danyiel Colin <danyiel5978@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiosignal = "^1.3.1"
+async-timeout = "^4.0.2"
+attrs = "^22.1.0"
+colorterm = "^0.3"
+frozenlist = "^1.3.3"
+idna = "^3.4"
+multidict = "^6.0.2"
+yarl = "^1.8.1"
+aiohttp = "^3.8.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+main = "pingchecker.__main__:main"
