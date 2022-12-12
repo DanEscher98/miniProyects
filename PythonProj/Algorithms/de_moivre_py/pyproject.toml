@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "de-moivre"
+version = "0.1.0"
+description = ""
+authors = ["Danyiel Colin <danyiel5978@gmail.com>"]
+readme = "README.md"
+packages = [{include = "de_moivre"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+matplotlib = "^3.6.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tools.poetry.scripts]
+main = "de_moivre.__main__:main"

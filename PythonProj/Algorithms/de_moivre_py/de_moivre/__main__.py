@@ -2,10 +2,12 @@
 # 9-Oct-2020
 
 from os import system, name
-from arrayFunk import frange
+from de_moivre.discrete_array import frange
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+from typing import Tuple, List, Iterable
+from dataclasses import dataclass
 
 
 def graph(a, b, z, n):
@@ -27,31 +29,48 @@ def graph(a, b, z, n):
     plt.show()
 
 
-def roothe(r, a, n):
-    path_a, path_b, pA, pB = [], [], [], []
+@dataclass
+class MoivrePath:
+    paths: Iterable[Tuple[float, float]]
+    points: Iterable[Tuple[float, float]]
+
+
+@dataclass
+class DeMoivreRoots:
+    number: complex
+    power: int
+    paths: Iterable[Tuple[complex, MoivrePath]]
+
+
+def roothe(r, a, n) -> MoivrePath:
+    path_a, path_b, points_a, points_b = [], [], [], []
     for k in frange(1, n, 0.01):
         path_a.append(pow(r, k) * math.cos(k * a))
         path_b.append(pow(r, k) * math.sin(k * a))
         if math.modf(k)[0] == 0:
-            pA.append(path_a[-1])
-            pB.append(path_b[-1])
-    return (path_a, path_b, pA, pB)
+            points_a.append(path_a[-1])
+            points_b.append(path_b[-1])
+    return MoivrePath(zip(path_a, path_b), zip(points_a, points_b))
 
 
-def calc_nthr(z, n):
+def calc_nthr(z: complex, n: int) -> Iterable[Tuple[complex, MoivrePath]]:
     r = math.sqrt(z.real ** 2 + z.imag ** 2)
     theta = math.atan2(z.imag, z.real)
-    a, b = [], []
     for k in range(n):
-        arg = (theta + 2 * np.pi * k) / n
-        absv = pow(r, 1.0 / n)
-        a.append(absv * math.cos(arg))
-        b.append(absv * math.sin(arg))
-        path_a, path_b, pA, pB = roothe(absv, arg, n)
-        ax.plot(path_a, path_b, label="{:.4f} + {:.4f}j\n".format(a[k], b[k]))
-        ax.plot(pA, pB, "ko")
-    plt.plot(z.real, z.imag, "bo", label="{}".format(str(z)))
-    return (a, b)
+        arg: float = (theta + 2 * np.pi * k) / n
+        absv: float = pow(r, 1.0 / n)
+
+        root = absv * (math.cos(arg) + math.sin(arg)*1j)
+        path = roothe(absv, arg, n)
+
+        yield root, path
+
+        # ax.plot(path_a, path_b, label=f"{root}\n")
+        # ax.plot(points_a, points_b, "ko")
+
+    # plot the discrete points
+    # plt.plot(z.real, z.imag, "bo", label="{}".format(str(z)))
+    # return DeMoivreRoots(z, n, roots, paths)
 
 
 # Codigo para interfaz del usuario
@@ -77,7 +96,6 @@ def menu():
 
 if __name__ == "__main__":
     while True:
-        print("Daniel Sanchez Dominguez - 1707549\n")
         menu()
         if input("¿Terminar programa? (y/n): ") == "y":
             break
