@@ -1,5 +1,6 @@
 # Daniel Sanchez Dominguez
 # 9-Oct-2020
+#!/usr/bin/python3
 
 from os import system, name
 from de_moivre.discrete_array import frange
