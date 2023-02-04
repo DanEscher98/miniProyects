@@ -123,7 +123,8 @@ impl fmt::Display for Board {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut fmt_board = Vec::new();
         for idx in 0..BOARD_LEN {
-            let cell = self.get_cell(Board::idx2point(idx));
+            let Position(col, row) = Board::idx2point(idx);
+            let cell = self.get_cell(Position(col, row));
             let figure = cell.map_or(String::from(" ").normal(), |piece| {
                 if piece.player == Player::White {
                     format!("{}", piece.figure).white()
@@ -132,12 +133,13 @@ impl fmt::Display for Board {
                 }
             });
             //let Position(x, y) = Board::idx2point(idx);
-            if (idx / 8) % 2 == (idx % 8) % 2  {
-                write!(&mut fmt_board, "{} {} {}", "[".blue().bold(), figure, "]".blue().bold()).unwrap();
-            } else {
+            // if (idx / 8) % 2 == (idx % 8) % 2  {
+            if (col % 2 == 0) ^ (row % 2 == 0) {
                 write!(&mut fmt_board, "{} {} {}", "[".white(), figure, "]".white()).unwrap();
+            } else {
+                write!(&mut fmt_board, "{} {} {}", "[".blue().bold(), figure, "]".blue().bold()).unwrap();
             }
-            if (idx + 1) % 8 == 0 {
+            if col == 7 {
                 writeln!(&mut fmt_board).unwrap();
             }
         }
