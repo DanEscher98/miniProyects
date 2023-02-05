@@ -18,7 +18,11 @@ pub enum ChessError {
     #[error("`{0}` is blocking the move of `{1}`")]
     PieceInTheMiddle(Figure, Figure),
     #[error("Position out of bound")]
-    PositionOutOfBounds
+    PositionOutOfBounds,
+    #[error("Goal position is same as start")]
+    TrivialMovement,
+    #[error("Checkmate")]
+    CheckMate
 }
 
 impl Default for ChessGame {
@@ -114,17 +118,23 @@ impl ChessGame {
             _ => todo!()
         }
     }
-    pub fn play(mut self, movement: Move) -> Result<()> {
-        ensure!(self.turn == movement.player, ChessError::MoveOutOfTurn(movement.player));
-        let Some(own_piece) = self.board.get_cell(movement.start.to_owned()) else {
+    pub fn play(&mut self, player: Player, start: Position, goal: Position) -> Result<()> {
+        ensure!(self.turn == player, ChessError::MoveOutOfTurn(player));
+        self.turn = !player;
+        ensure!(start != goal, ChessError::TrivialMovement);
+        let Some(mut own_piece) = self.board.get_cell(start.to_owned()) else {
             bail!(ChessError::NoPieceInCell);
         };
-        if let Some(goal_piece) = self.board.get_cell(movement.goal.to_owned()) {
+        if let Some(goal_piece) = self.board.get_cell(goal.to_owned()) {
             ensure!(goal_piece.player != own_piece.player, ChessError::CantSelfAttack);
+            ensure!(goal_piece.figure != Figure::King, ChessError::CheckMate);
+        }
+        if !own_piece.moved {
+            own_piece.moved = true;
         }
         // check if valid movement, match figure
-        self.board.set_cell(movement.start, None);
-        self.board.set_cell(movement.goal, Some(own_piece));
+        self.board.set_cell(start, None);
+        self.board.set_cell(goal, Some(own_piece));
         anyhow::Ok(())
     }
 }

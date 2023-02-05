@@ -32,10 +32,33 @@ pub struct Move {
     pub goal: Position
 }
 
+impl Move {
+    fn new(player: Player, figure: Figure, moved: bool, start: Position, goal: Position) -> Self {
+        Move {
+            piece: Piece { player, figure, position: start, moved },
+            player,
+            start,
+            goal
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Player {
     Black,
     White
+}
+
+
+impl std::ops::Not for Player {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        match self {
+            Player::Black => Player::White,
+            Player::White => Player::Black
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -127,9 +150,9 @@ impl fmt::Display for Board {
             let cell = self.get_cell(Position(col, row));
             let figure = cell.map_or(String::from(" ").normal(), |piece| {
                 if piece.player == Player::White {
-                    format!("{}", piece.figure).white()
+                    format!("{}", piece.figure).white().bold()
                 } else {
-                    format!("{}", piece.figure).blue()
+                    format!("{}", piece.figure).blue().bold()
                 }
             });
             //let Position(x, y) = Board::idx2point(idx);
@@ -137,7 +160,7 @@ impl fmt::Display for Board {
             if (col % 2 == 0) ^ (row % 2 == 0) {
                 write!(&mut fmt_board, "{} {} {}", "[".white(), figure, "]".white()).unwrap();
             } else {
-                write!(&mut fmt_board, "{} {} {}", "[".blue().bold(), figure, "]".blue().bold()).unwrap();
+                write!(&mut fmt_board, "{} {} {}", "[".blue(), figure, "]".blue()).unwrap();
             }
             if col == 7 {
                 writeln!(&mut fmt_board).unwrap();
