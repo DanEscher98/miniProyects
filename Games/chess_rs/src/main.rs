@@ -2,6 +2,7 @@ use chessgame::{self, Result};
 use chessgame::{board::{Position, Player}, game::ChessGame};
 
 fn main() -> Result<()> {
+    // eval_move(start, goal, piece) -> bool
     let mut game = ChessGame::default();
     println!("{}", &game.board);
     game.play(Player::White, Position(4, 1), Position(4, 3))?;

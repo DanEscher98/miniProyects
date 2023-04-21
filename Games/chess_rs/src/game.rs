@@ -21,6 +21,12 @@ pub enum ChessError {
     PositionOutOfBounds,
     #[error("Goal position is same as start")]
     TrivialMovement,
+    #[error("Only allowed if piece hasn't been moved")]
+    OnlyAllowedIfNotMoved,
+    #[error("A Piece is blocking the move")]
+    MoveBlockedByPiece,
+    #[error("Invalid move for the piece {0}")]
+    InvalidMove(Figure),
     #[error("Checkmate")]
     CheckMate
 }
@@ -104,14 +110,20 @@ impl Default for ChessGame {
 }
 
 impl ChessGame {
-    pub fn valid_piece_move(start: Position, goal: Position, piece: Piece) -> bool {
+    pub fn abstract_valid_move(start: Position, goal: Position, piece: Piece) -> Result<()> {
         let player = piece.player;
         match piece.figure {
             Figure::Pawn => {
-                /*first move, W(x, y) -> W(x, y+2)
-                * normal W(x, y) -> W(x, y+1)
-                * attack W(x, y) -> W(x+1, y+1) | W(x-1, y+1)
-                * reached opposite side, crown
+                ensure!(start.is_valid() && goal.is_valid(), ChessError::PositionOutOfBounds);
+                if goal.y == start.y + 2 {
+                    ensure!(!piece.moved, ChessError::OnlyAllowedIfNotMoved);
+                    ensure!(start.x == goal.x, ChessError::InvalidMove(Figure::Pawn));
+                    return Ok(());
+                }
+                /* [x] first move, W(x, y) -> W(x, y+2)
+                *  [ ] normal W(x, y) -> W(x, y+1)
+                *  [ ] attack W(x, y) -> W(x+1, y+1) | W(x-1, y+1)
+                *  [ ] reached opposite side, crown
                 * */
                 todo!()
             },

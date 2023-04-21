@@ -8,19 +8,27 @@ pub const BOARD_SIDE: usize = 8;
 
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct Position(pub u8, pub u8);
+pub struct Position {
+    pub x: u8,
+    pub y: u8
+}
 
 impl fmt::Display for Position {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let x = self.0;
         let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'd'];
-        let Some(letter) = letters.get(x as usize) else {
+        let Some(letter) = letters.get(self.x as usize) else {
             return Err(std::fmt::Error);
         };
-        if self.1 >= 8 {
+        if self.y >= 8 {
             return Err(std::fmt::Error);
         }
-        write!(f, "{}{}", letter, self.1)
+        write!(f, "{}{}", letter, self.y)
+    }
+}
+
+impl Position {
+    pub fn is_valid(&self) -> bool {
+        self.x < BOARD_SIDE && self.y < BOARD_SIDE
     }
 }
 
