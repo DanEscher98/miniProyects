@@ -1,0 +1,9 @@
+[submodule "Cli-Apps/cpp_todoapp/extern/cxxopts"]
+	path = Cli-Apps/cpp_todoapp/extern/cxxopts
+	url = https://github.com/jarro2783/cxxopts.git
+[submodule "Cli-Apps/cpp_todoapp/extern/fmt"]
+	path = Cli-Apps/cpp_todoapp/extern/fmt
+	url = https://github.com/fmtlib/fmt.git
+[submodule "Cli-Apps/cpp_todoapp/extern/googletest"]
+	path = Cli-Apps/cpp_todoapp/extern/googletest
+	url = https://github.com/google/googletest.git

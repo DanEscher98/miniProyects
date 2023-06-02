@@ -1,0 +1,36 @@
+\hypertarget{utils_8cpp}{}\doxysection{src/utils.cpp File Reference}
+\label{utils_8cpp}\index{src/utils.cpp@{src/utils.cpp}}
+{\ttfamily \#include $<$mutex$>$}\newline
+{\ttfamily \#include $<$thread$>$}\newline
+{\ttfamily \#include $<$fstream$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$random$>$}\newline
+{\ttfamily \#include \char`\"{}lib.\+hpp\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{utils_8cpp_afff97bcb66fb500e014ec27e42403856}{write\+\_\+file}} (int num\+\_\+threds)
+\begin{DoxyCompactList}\small\item\em Writes random strings to a file using threads. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{utils_8cpp_afff97bcb66fb500e014ec27e42403856}\label{utils_8cpp_afff97bcb66fb500e014ec27e42403856}} 
+\index{utils.cpp@{utils.cpp}!write\_file@{write\_file}}
+\index{write\_file@{write\_file}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{write\_file()}{write\_file()}}
+{\footnotesize\ttfamily int write\+\_\+file (\begin{DoxyParamCaption}\item[{int}]{num\+\_\+threads }\end{DoxyParamCaption})}
+
+
+
+Writes random strings to a file using threads. 
+
+The function uses {\ttfamily mutex} to avoid data races
+
+
+\begin{DoxyParams}{Parameters}
+{\em num\+\_\+threads} & the number of threads to be used \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+error status 
+\end{DoxyReturn}

@@ -1,0 +1,56 @@
+[
+{
+  "directory": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build",
+  "command": "/usr/bin/c++  -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern/cxxopts/include -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern/fmt/include  -Wall -Wextra -Wpedantic -Os -std=gnu++20 -o CMakeFiles/todoapp.dir/src/main.cpp.o -c /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/src/main.cpp",
+  "file": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/src/main.cpp",
+  "output": "CMakeFiles/todoapp.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build",
+  "command": "/usr/bin/c++  -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern/cxxopts/include -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern/fmt/include  -Wall -Wextra -Wpedantic -Os -std=gnu++20 -o CMakeFiles/todoapp.dir/src/lib.cpp.o -c /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/src/lib.cpp",
+  "file": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/src/lib.cpp",
+  "output": "CMakeFiles/todoapp.dir/src/lib.cpp.o"
+},
+{
+  "directory": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build",
+  "command": "/usr/bin/c++  -isystem /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest/include -isystem /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest  -Wall -Wextra -Wpedantic -Os -std=gnu++20 -o CMakeFiles/unittests.dir/src/test.cpp.o -c /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/src/test.cpp",
+  "file": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/src/test.cpp",
+  "output": "CMakeFiles/unittests.dir/src/test.cpp.o"
+},
+{
+  "directory": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/extern/fmt",
+  "command": "/usr/bin/c++  -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern/fmt/include  -Wall -Wextra -Wpedantic -Os -std=gnu++20 -o CMakeFiles/fmt.dir/src/format.cc.o -c /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern/fmt/src/format.cc",
+  "file": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern/fmt/src/format.cc",
+  "output": "extern/fmt/CMakeFiles/fmt.dir/src/format.cc.o"
+},
+{
+  "directory": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/extern/fmt",
+  "command": "/usr/bin/c++  -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern/fmt/include  -Wall -Wextra -Wpedantic -Os -std=gnu++20 -o CMakeFiles/fmt.dir/src/os.cc.o -c /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern/fmt/src/os.cc",
+  "file": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/extern/fmt/src/os.cc",
+  "output": "extern/fmt/CMakeFiles/fmt.dir/src/os.cc.o"
+},
+{
+  "directory": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-build/googlemock",
+  "command": "/usr/bin/c++  -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googlemock/include -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googlemock -isystem /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest/include -isystem /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest  -Wall -Wextra -Wpedantic -Os -std=c++20 -Wall -Wshadow -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles/gmock.dir/src/gmock-all.cc.o -c /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googlemock/src/gmock-all.cc",
+  "file": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googlemock/src/gmock-all.cc",
+  "output": "_deps/googletest-build/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o"
+},
+{
+  "directory": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-build/googlemock",
+  "command": "/usr/bin/c++  -isystem /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googlemock/include -isystem /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googlemock -isystem /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest/include -isystem /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest  -Wall -Wextra -Wpedantic -Os -std=c++20 -Wall -Wshadow -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles/gmock_main.dir/src/gmock_main.cc.o -c /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googlemock/src/gmock_main.cc",
+  "file": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googlemock/src/gmock_main.cc",
+  "output": "_deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o"
+},
+{
+  "directory": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-build/googletest",
+  "command": "/usr/bin/c++  -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest/include -I/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest  -Wall -Wextra -Wpedantic -Os -std=c++20 -Wall -Wshadow -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles/gtest.dir/src/gtest-all.cc.o -c /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest/src/gtest-all.cc",
+  "file": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest/src/gtest-all.cc",
+  "output": "_deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o"
+},
+{
+  "directory": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-build/googletest",
+  "command": "/usr/bin/c++  -isystem /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest/include -isystem /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest  -Wall -Wextra -Wpedantic -Os -std=c++20 -Wall -Wshadow -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -c /home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest/src/gtest_main.cc",
+  "file": "/home/dany98/Working/projectsMini/Cli-Apps/cpp_todoapp/build/_deps/googletest-src/googletest/src/gtest_main.cc",
+  "output": "_deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o"
+}
+]

@@ -1,0 +1,35 @@
+\hypertarget{cli_8hpp_source}{}\doxysection{cli.\+hpp}
+\label{cli_8hpp_source}\index{src/cli.hpp@{src/cli.hpp}}
+\mbox{\hyperlink{cli_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#include\ <cxxopts.hpp>}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{lib_8hpp}{lib.hpp}}"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structArgs}{Args}}\ \{}
+\DoxyCodeLine{00005\ \ \ std::string\ \mbox{\hyperlink{structArgs_a05dbd29e636f21c7a52d1224a55dd719}{name}};}
+\DoxyCodeLine{00006\ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{structArgs_a5773084e0ffb0956cc66ffb2a8322a46}{threads}};}
+\DoxyCodeLine{00007\ \};}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \mbox{\hyperlink{structArgs}{Args}}\ \mbox{\hyperlink{cli_8hpp_a9a11339bca6524d376b86ffa5ed88388}{parseArguments}}(\textcolor{keywordtype}{int}\ argc,\ \textcolor{keywordtype}{char}*\ argv[])\ \{}
+\DoxyCodeLine{00010\ \ \ cxxopts::Options\ options(\textcolor{stringliteral}{"{}helloworld"{}},\ \textcolor{stringliteral}{"{}A\ hello\ world\ program"{}});}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \ \ options.add\_options()}
+\DoxyCodeLine{00013\ \ \ \ \ (\textcolor{stringliteral}{"{}n,name"{}},\ \textcolor{stringliteral}{"{}Name\ to\ greet"{}},\ cxxopts::value<std::string>()-\/>default\_value(\textcolor{stringliteral}{"{}World"{}}))}
+\DoxyCodeLine{00014\ \ \ \ \ (\textcolor{stringliteral}{"{}t,threads"{}},\ \textcolor{stringliteral}{"{}Number\ of\ threads"{}},\ cxxopts::value<int>()-\/>default\_value(\textcolor{stringliteral}{"{}4"{}}))}
+\DoxyCodeLine{00015\ \ \ \ \ (\textcolor{stringliteral}{"{}h,help"{}},\ \textcolor{stringliteral}{"{}Print\ usage"{}})}
+\DoxyCodeLine{00016\ \ \ ;}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \mbox{\hyperlink{structArgs}{Args}}\ args;}
+\DoxyCodeLine{00019\ \ \ \textcolor{keyword}{auto}\ result\ =\ options.parse(argc,\ argv);}
+\DoxyCodeLine{00020\ \ \ \textcolor{keywordflow}{if}\ (result.count(\textcolor{stringliteral}{"{}help"{}}))\ \{}
+\DoxyCodeLine{00021\ \ \ \ \ fmt::print(\textcolor{stringliteral}{"{}\{\}"{}},\ options.help());}
+\DoxyCodeLine{00022\ \ \ \ \ exit(0);}
+\DoxyCodeLine{00023\ \ \ \}}
+\DoxyCodeLine{00024\ \ \ args.\mbox{\hyperlink{structArgs_a05dbd29e636f21c7a52d1224a55dd719}{name}}\ =\ result[\textcolor{stringliteral}{"{}name"{}}].as<std::string>();}
+\DoxyCodeLine{00025\ \ \ args.\mbox{\hyperlink{structArgs_a5773084e0ffb0956cc66ffb2a8322a46}{threads}}\ =\ result[\textcolor{stringliteral}{"{}threads"{}}].as<\textcolor{keywordtype}{int}>();}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \textcolor{keywordflow}{return}\ args;}
+\DoxyCodeLine{00028\ \}}
+\DoxyCodeLine{00029\ }
+
+\end{DoxyCode}

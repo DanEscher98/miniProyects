@@ -1,0 +1,30 @@
+\hypertarget{utils_8hpp}{}\doxysection{src/utils.hpp File Reference}
+\label{utils_8hpp}\index{src/utils.hpp@{src/utils.hpp}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{utils_8hpp_a4a7551684299074e7d59272e02cf4827}{write\+\_\+file}} (int num\+\_\+threads)
+\begin{DoxyCompactList}\small\item\em Writes random strings to a file using threads. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{utils_8hpp_a4a7551684299074e7d59272e02cf4827}\label{utils_8hpp_a4a7551684299074e7d59272e02cf4827}} 
+\index{utils.hpp@{utils.hpp}!write\_file@{write\_file}}
+\index{write\_file@{write\_file}!utils.hpp@{utils.hpp}}
+\doxysubsubsection{\texorpdfstring{write\_file()}{write\_file()}}
+{\footnotesize\ttfamily int write\+\_\+file (\begin{DoxyParamCaption}\item[{int}]{num\+\_\+threads }\end{DoxyParamCaption})}
+
+
+
+Writes random strings to a file using threads. 
+
+The function uses {\ttfamily mutex} to avoid data races
+
+
+\begin{DoxyParams}{Parameters}
+{\em num\+\_\+threads} & the number of threads to be used \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+error status 
+\end{DoxyReturn}

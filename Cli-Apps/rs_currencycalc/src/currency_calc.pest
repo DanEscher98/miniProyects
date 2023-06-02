@@ -1,0 +1,43 @@
+// Numeric literals
+number  = @{ ("+" | "-")? ~ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT*)? }
+
+add   = { "+" }
+sub   = { "-" }
+mul   = { "*" }
+div   = { "/" }
+cnv   = { "->" }
+
+aditive_op  = _{ add | sub }
+operation   = _{ aditive_op | mul | div }
+term  = _{ number | "(" ~ expr ~ ")" }
+expr  =  { term ~ (operation ~ term)* }
+
+// Currency arithmetic
+national_curr   =  { "USD" | "EUR" | "MXN" | "ARS" }
+crypto_curr     =  { "BTC" | "ETH" | "DOT" }
+currency        =  { national_curr | crypto_curr }
+amount          = @{ number ~ currency }
+
+convert         = _{ curr_term ~ (cnv ~ currency)* }
+
+curr_term       = _{
+    amount 
+  | "(" ~ curr_expr ~ ")" 
+  | "(" ~ expr ~ ")" ~ currency
+  | "(" ~ convert ~ ")" }
+
+curr_expr       =  {
+    curr_term ~ (aditive_op ~ curr_term)*
+  | curr_term ~ mul ~ expr
+  | expr ~ mul ~ curr_term
+  | curr_term ~ div ~ expr 
+  | curr_term ~ mul ~ curr_term ~ div ~ curr_term }
+
+gth = { ">" }
+mth = { "<" }
+eq  = { "=" }
+cmp_op          = _{ gth | mth | eq }
+comparission    = _{ curr_term ~ cmp_op ~ curr_term ~ "|" ~ currency }
+
+calculation = _{ SOI ~ curr_term ~ EOI }
+WHITESPACE  = _{ " " | "\t" }
