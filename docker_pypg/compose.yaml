@@ -1,0 +1,50 @@
+version: '3.8'
+name: pypg
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: app.Dockerfile
+      args:
+        - MY_APP=mypy_server
+    restart: always
+    container_name: pypg-app
+    ports:
+      - "8000:8000"
+    networks:
+      - front-tier
+      - back-tier
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: pypg_db
+      POSTGRES_USER: danyiel
+      POSTGRES_PASSWORD: 1234
+    restart: always
+    networks:
+      - back-tier
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data:Z
+      - ./migrations:/migrations:Z
+
+volumes:
+  db-data:
+    driver: local
+
+configs:
+  httpd-config:
+    external: true
+
+secrets:
+  server-certificate:
+    external: true
+
+networks:
+  front-tier: {}
+  back-tier: {}

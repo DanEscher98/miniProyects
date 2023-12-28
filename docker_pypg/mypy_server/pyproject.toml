@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "mypy-server"
+version = "0.1.0"
+description = ""
+authors = ["Danyiel Colin <danyiel5978@gmail.com>"]
+readme = "README.md"
+packages = [{include = "mypy_server"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+psycopg2 = "^2.9.9"
+fastapi = "^0.108.0"
+python-dotenv = "^1.0.0"
+uvicorn = {extras = ["standard"], version = "^0.25.0"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+pypg_server = "mypy_server.main:start"

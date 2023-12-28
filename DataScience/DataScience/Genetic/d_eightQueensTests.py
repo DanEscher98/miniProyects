@@ -90,7 +90,7 @@ class eightQueensTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    eightQueens(8)
+    eightQueens(16)
 
 # size=1000 -> Generation 491 Mutations: 2104125
 

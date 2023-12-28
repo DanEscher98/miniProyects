@@ -1,0 +1,6 @@
+- [x] App: Minimal Python server (FastAPI, Uvicorn)
+- [x] container(App)
+- [x] Host -> container(App): curl
+- [ ] container(DB): with migrations
+- [ ] container(App) -> container(DB): psycopg2
+- [ ] compose.yaml
