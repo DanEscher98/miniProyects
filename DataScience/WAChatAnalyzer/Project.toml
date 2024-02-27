@@ -1,0 +1,8 @@
+name = "WAChatAnalyzer"
+uuid = "e56500eb-8a90-483d-b198-78a4021853b9"
+authors = ["Danyiel Colin <danyiel5978@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"

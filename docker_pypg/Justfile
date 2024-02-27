@@ -7,8 +7,8 @@ DB_NAME   := `yq '.database.db_name' config.yaml`
 DB_USER   := `yq '.database.username' config.yaml`
 DB_PSWD   := `yq '.database.password' config.yaml`
 
-curl:
-  @curl -sS http://{{APP_HOST}}:{{APP_PORT}} | jq
+test_db:
+  @curl -sSX GET http://{{APP_HOST}}:{{APP_PORT}}/test_db/ | jq
 
 pg_url: 
   @echo "postgres://{{DB_USER}}:{{DB_PSWD}}@localhost:{{DB_PORT}}/{{DB_NAME}}"
@@ -20,6 +20,6 @@ migrate:
   sqlx database create --database-url="$(just pg_url)"
   sqlx migrate run --database-url="$(just pg_url)"
 
-up:
-  docker compose -f compose.yaml down
-  docker compose -f compose.yaml up -d
+build:
+  @# docker compose -f compose.yaml down
+  docker compose -f compose.yaml up -d --build

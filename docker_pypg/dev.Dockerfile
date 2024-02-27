@@ -21,19 +21,12 @@ ENV PIP_DEFAULT_TIMEOUT=100 \
 RUN pip install --upgrade pip
 RUN pip install "poetry==$POETRY_VERSION"
 
-# COPY pyproject.toml poetry.lock README.md ./
-COPY "$MY_APP" ./
+COPY "$MY_APP/pyproject.toml" "$MY_APP/poetry.lock" ./
+
 RUN poetry config virtualenvs.in-project true && \
     poetry install --only=main --no-root
-RUN poetry build
-#RUN . /venv/bin/activate && poetry install --no-root $(test "$YOUR_ENV" == production && echo "--no-dev")
-
-FROM base as final
-
-COPY --from=builder /app/.venv ./.venv
-COPY --from=builder /app/dist .
-RUN pip install *.whl
 
 COPY config.yaml .
+COPY "$MY_APP" ./
 
-CMD ["pypg_server"]
+CMD ["poetry", "run", "pypg_server"]
